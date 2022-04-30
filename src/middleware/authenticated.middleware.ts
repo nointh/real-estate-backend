@@ -15,7 +15,6 @@ async function authenticated(
         return res.status(401).json({ error: "Unauthorized"})
     }
     const accessToken = bearer.split('Bearer ')[1].trim()
-    console.log(accessToken)
     try {
         const payload: Token | jwt.JsonWebTokenError = await verifyToken(accessToken)
 

@@ -29,6 +29,16 @@ class UserController implements Controller{
             `${this.path}`,
             authenticated,
             this.getUser
+        ),
+        this.router.put(
+            `${this.path}`,
+            authenticated,
+            this.update
+        )
+        this.router.post(
+            `${this.path}/changePassword`,
+            authenticated,
+            this.changePassword
         )
     }
     private register = async (
@@ -77,6 +87,46 @@ class UserController implements Controller{
                 return next(new HttpException(401,"Unauthorized"))
             }
             res.status(200).json({ user: req.user })
+        } catch( error:any ){
+            next(new HttpException(400, error.message))
+        }
+    }
+    private changePassword = async (
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ) : Promise<Response | void> => {
+        try {
+            const { oldPassword, newPassword} = req.body
+            if (! req.user){
+                return next(new HttpException(401,"Unauthorized"))
+            }
+            if (await this.UserService.changePassword(req.user._id, oldPassword, newPassword)){
+                res.status(200).json({ message: "Change password successfully" })
+            }
+            else{
+                next(new HttpException(401,"Cannot change password"))
+            }
+        } catch( error:any ){
+            next(new HttpException(400, error.message))
+        }
+    }
+    private update = async (
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ) : Promise<Response | void> => {
+        try {
+            const { fullname, dateOfBirth, phone, email, cityId, districtId, wardId, streetId } = req.body      
+            if (! req.user){
+                return next(new HttpException(401,"Unauthorized"))
+            }
+            if (await this.UserService.update(req.user._id, fullname, dateOfBirth, phone, email, cityId, districtId, wardId, streetId)){
+                res.status(200).json({ message: "Update user successfully" })
+            }
+            else{
+                next(new HttpException(401,"Cannot update user"))
+            }
         } catch( error:any ){
             next(new HttpException(400, error.message))
         }
