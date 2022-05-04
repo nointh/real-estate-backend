@@ -33,7 +33,7 @@ class PostController implements Controller {
   ): Promise<Response | void> => {
     try {
       const { username } = req.body
-      const token = await this.PostService.apprve(username)
+      const token = await this.PostService.approve(username)
       res.status(201).json({ token })
     } catch (error: any) {
       next(new HttpException(400, error.message))
@@ -46,7 +46,7 @@ class PostController implements Controller {
   ): Promise<Response | void> => {
     try {
       const { username } = req.body
-      const token = await this.UserService.delete(username)
+      const token = await this.PostService.decline(username)
       res.status(201).json({ token })
     } catch (error: any) {
       next(new HttpException(400, error.message))
