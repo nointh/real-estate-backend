@@ -37,7 +37,7 @@ class App {
 
     }
     public listen(): void{
-        this.express.listen(this.port, ()=>{
+        this.express.listen(this.port || 3031, ()=>{
             console.log(`server is running on port ${this.port}`)
         })
     }
