@@ -16,6 +16,17 @@ const PostSchema = new Schema(
             type: String,
             required: true
         },
+        postType: {
+            type: {
+                _id: {
+                    type: String,
+                },
+                name: {
+                    type: String
+                }
+            },
+            required: true
+        },
         estateType: {
             type: {
                 _id: {

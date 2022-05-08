@@ -17,6 +17,7 @@ const app = new App(
   [
     new PostController(),
     new UserController(),
+    new UserPostController(),
     new ProvinceController(),
     new DistrictController(),
     new WardController(),

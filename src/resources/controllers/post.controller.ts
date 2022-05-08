@@ -18,7 +18,7 @@ class PostController implements Controller{
             this.create
         )
         this.router.get(
-            `${this.path}/post-title`,
+            `${this.path}/get`,
             this.getDetail
         )
         this.router.get(
@@ -40,6 +40,7 @@ class PostController implements Controller{
                 title,
                 address,
                 ownerId,
+                postType,
                 estateType,
                 forSaleOrRent,
                 status,
@@ -68,6 +69,7 @@ class PostController implements Controller{
                 title,
                 address,
                 ownerId,
+                postType,
                 estateType,
                 forSaleOrRent,
                 status,
@@ -118,9 +120,9 @@ class PostController implements Controller{
     ) : Promise<Response | void> => {
         try {
             let purpose = req.query.purpose?.toString()
-            const token = await this.PostService.getListPostByPurpose(purpose)
+            const data = await this.PostService.getListPostByPurpose(purpose)
 
-            res.status(200).json({ token })
+            res.status(200).json({ data })
         } catch( error:any ){
             next(new HttpException(400, error.message))
         }

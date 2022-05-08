@@ -9,6 +9,10 @@ class PostService {
     title: string,
     address: string,
     ownerId: string,
+    postType: {
+      _id: string,
+      name: string,
+    },
     estateType: {
       _id: string,
       name: string,
@@ -61,6 +65,7 @@ class PostService {
         title,
         address,
         ownerId,
+        postType,
         estateType,
         forSaleOrRent,
         status,
