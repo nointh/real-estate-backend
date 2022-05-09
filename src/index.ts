@@ -1,6 +1,9 @@
+import 'dotenv/config'
+import 'module-alias/register'
+import App from './app'
+import UserPostController from './resources/controllers/post.controller'
 import "dotenv/config"
 import "module-alias/register"
-import App from "./app"
 import validateEnv from "@/utils/validateEnv"
 import PostController from "@/resources/controllers/admin/post.controller"
 import ProvinceController from "./resources/controllers/address/province.controller"
@@ -14,6 +17,7 @@ const app = new App(
   [
     new PostController(),
     new UserController(),
+    new UserPostController(),
     new ProvinceController(),
     new DistrictController(),
     new WardController(),
