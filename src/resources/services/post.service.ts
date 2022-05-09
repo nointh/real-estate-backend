@@ -129,6 +129,20 @@ class PostService {
     }
   }
 
+  public async getListPostByStatus(status: any): Promise<any> {
+    try {
+      let docs = await this.post.find({ status: status }).exec()
+
+      if (docs) {
+        return docs
+      } else {
+        throw new Error("Cannot get post list")
+      }
+    } catch (error) {
+      throw new Error("Unable to get post list")
+    }
+  }
+
   public async delete(_id: any): Promise<any> {
     try {
       let result = await this.post.findByIdAndDelete(_id)

@@ -22,8 +22,12 @@ class PostController implements Controller{
             this.getDetail
         )
         this.router.get(
-            `${this.path}/list-post`,
+            `${this.path}/list-post-by-purpose`,
             this.getListPostByPurpose
+        )
+        this.router.get(
+            `${this.path}/list-post-by-status`,
+            this.getListPostByStatus
         )
         this.router.post(
             `${this.path}/delete`,
@@ -121,6 +125,20 @@ class PostController implements Controller{
         try {
             let purpose = req.query.purpose?.toString()
             const data = await this.PostService.getListPostByPurpose(purpose)
+
+            res.status(200).json({ data })
+        } catch( error:any ){
+            next(new HttpException(400, error.message))
+        }
+    }
+    private getListPostByStatus = async (
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ) : Promise<Response | void> => {
+        try {
+            let status = req.query.status?.toString()
+            const data = await this.PostService.getListPostByStatus(status)
 
             res.status(200).json({ data })
         } catch( error:any ){
