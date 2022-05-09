@@ -56,7 +56,7 @@ const PostSchema = new Schema(
                 required: true
             },
             DistrictId: {
-                type: Number,
+                type: String,
                 required: true
             },
             DistrictName: {
@@ -73,7 +73,7 @@ const PostSchema = new Schema(
                 type: String
             },
             StreetId: {
-                type: Number
+                type: String
             },
             StreetName: {
                 type: String
@@ -85,7 +85,7 @@ const PostSchema = new Schema(
                 type: String
             },
             WardId: {
-                type: Number
+                type: String
             },
             WardName: {
                 type: String
