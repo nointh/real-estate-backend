@@ -10,33 +10,33 @@ class PostService {
     address: string,
     ownerId: string,
     postType: {
-      _id: string,
-      name: string,
+      _id: string
+      name: string
     },
     estateType: {
-      _id: string,
-      name: string,
+      _id: string
+      name: string
     },
     forSaleOrRent: string,
     status: string,
     location: {
-      CityCode: string,
-      CityName: string,
-      DistrictId: number,
-      DistrictName: string,
-      DistrictPrefix: string,
-      Label: string,
-      ShortName: string,
-      StreetId: number,
-      StreetName: string,
-      StreetPrefix: string,
-      TextSearch: string,
-      WardId: number,
-      WardName: string,
+      CityCode: string
+      CityName: string
+      DistrictId: number
+      DistrictName: string
+      DistrictPrefix: string
+      Label: string
+      ShortName: string
+      StreetId: number
+      StreetName: string
+      StreetPrefix: string
+      TextSearch: string
+      WardId: number
+      WardName: string
       WardPrefix: string
     },
     cor: {
-      lat: number,
+      lat: number
       Lng: number
     },
     description: string,
@@ -57,9 +57,10 @@ class PostService {
     roadWidth: number,
     facade: number,
     belongToProject: {
-      projectId: number,
+      projectId: number
       projectName: string
-    }): Promise<string | Error> {
+    }
+  ): Promise<string | Error> {
     try {
       const post = await this.post.create({
         title,
@@ -88,7 +89,7 @@ class PostService {
         depth,
         roadWidth,
         facade,
-        belongToProject
+        belongToProject,
       })
 
       if (post) {
@@ -159,47 +160,58 @@ class PostService {
 
   public async approve(_id: string): Promise<any> {
     try {
-      let post = await this.post.findById(_id)
+      let post = await this.post.findOne({ _id: _id })
 
       if (post) {
-        post.update(
-          {
-            $set: {
-              status: "publish",
-            },
+        let result = await post.update({
+          $set: {
+            status: "published",
           },
-          () => {
-            return "Success"
-          }
-        )
+        })
+        return result
       } else {
         throw new Error("Cannot find post")
       }
     } catch (error) {
-      throw new Error("Unable to approve post")
+      throw new Error("Unable to approve post:")
     }
   }
-  
+
   public async decline(_id: string): Promise<any> {
     try {
-      let post = await this.post.findById(_id)
+      let post = await this.post.findOne({ _id: _id })
 
       if (post) {
-        post.update(
-          {
-            $set: {
-              status: "declined",
-            },
+        let result = await post.update({
+          $set: {
+            status: "declined",
           },
-          () => {
-            return "Success"
-          }
-        )
+        })
+        return result
       } else {
         throw new Error("Cannot find post")
       }
     } catch (error) {
       throw new Error("Unable to decline post")
+    }
+  }
+
+  public async terminate(_id: string): Promise<any> {
+    try {
+      let post = await this.post.findOne({ _id: _id })
+
+      if (post) {
+        let result = await post.update({
+          $set: {
+            status: "terminated",
+          },
+        })
+        return result
+      } else {
+        throw new Error("Cannot find post")
+      }
+    } catch (error) {
+      throw new Error("Unable to terminate post")
     }
   }
 }
