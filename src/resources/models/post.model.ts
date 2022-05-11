@@ -1,5 +1,5 @@
 import { Schema, model } from 'mongoose'
-import Post from '@/resources/interfaces/post.interface'
+import IPost from '@/resources/interfaces/post.interface'
 import { number, object } from 'joi'
 
 const PostSchema = new Schema(
@@ -16,26 +16,12 @@ const PostSchema = new Schema(
             type: String,
             required: true
         },
-        postType: {
-            type: {
-                _id: {
-                    type: String,
-                },
-                name: {
-                    type: String
-                }
-            },
+        postTypeId: {
+            type: String,
             required: true
         },
-        estateType: {
-            type: {
-                _id: {
-                    type: String,
-                },
-                name: {
-                    type: String
-                }
-            },
+        estateTypeId: {
+            type: String,
             required: true
         },
         forSaleOrRent: {
@@ -166,4 +152,4 @@ const PostSchema = new Schema(
         timestamps: true
     }
 )
-export default model<Post>("Post", PostSchema)
+export default model<IPost>("Post", PostSchema)

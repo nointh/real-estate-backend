@@ -1,27 +1,26 @@
 import { Document } from 'mongoose'
+import IPost from './post.interface'
 
-export default interface IPost extends Document{
+export default interface PostDto{
     _id: string,
     title: string,
     address: string,
-    ownerId: string,
-    postTypeId: string,
-    estateTypeId: string,
-    status: string,
+    owner: {
+        name: string,
+        avatar: string,
+        email: string,
+        phone: string
+    },
+    postType: string,
+    estateType: string,
     forSaleOrRent: string,
     location: {
-        CityCode: string,
         CityName: string,
-        DistrictId: string,
         DistrictName: string,
         DistrictPrefix: string,
         Label: string,
-        ShortName: null,
-        StreetId: string,
         StreetName: string,
         StreetPrefix: string,
-        TextSearch: string,
-        WardId: string,
         WardName: null,
         WardPrefix: null
     },
@@ -51,3 +50,9 @@ export default interface IPost extends Document{
     roadWidth: number,
     facade: number
 }
+
+// export const parsePostDto = (post: Post) : PostDto =>{
+//     return {
+        
+//     }
+// }

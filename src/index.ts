@@ -11,6 +11,9 @@ import DistrictController from "./resources/controllers/address/district.control
 import WardController from "./resources/controllers/address/ward.controller"
 import StreetController from "./resources/controllers/address/street.controller"
 import UserController from "@/resources/controllers/user.controller"
+import EstateTypeController from './resources/controllers/estateType.controller'
+import PostTypeController from './resources/controllers/postType.controller'
+import PriceUnitController from './resources/controllers/priceUnit.controller'
 validateEnv()
 
 const app = new App(
@@ -22,6 +25,9 @@ const app = new App(
     new DistrictController(),
     new WardController(),
     new StreetController(),
+    new EstateTypeController(),
+    new PostTypeController(),
+    new PriceUnitController(),
   ],
   Number(process.env.PORT)
 )

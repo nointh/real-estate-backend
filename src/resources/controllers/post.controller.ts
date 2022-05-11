@@ -44,8 +44,8 @@ class PostController implements Controller{
                 title,
                 address,
                 ownerId,
-                postType,
-                estateType,
+                postTypeId,
+                estateTypeId,
                 forSaleOrRent,
                 status,
                 location,
@@ -73,8 +73,8 @@ class PostController implements Controller{
                 title,
                 address,
                 ownerId,
-                postType,
-                estateType,
+                postTypeId,
+                estateTypeId,
                 forSaleOrRent,
                 status,
                 location,
@@ -103,7 +103,7 @@ class PostController implements Controller{
             next(new HttpException(400, error.message))
         }
     }
-    private getDetail = async (
+    private getDetail = async ( 
         req: Request,
         res: Response,
         next: NextFunction
