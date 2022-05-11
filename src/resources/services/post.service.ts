@@ -1,6 +1,5 @@
 import PostModel from "@/resources/models/post.model"
-import Post from "@/resources/interfaces/post.interface"
-import { title } from "process"
+import IPost from "@/resources/interfaces/post.interface"
 
 class PostService {
   private post = PostModel
@@ -9,14 +8,8 @@ class PostService {
     title: string,
     address: string,
     ownerId: string,
-    postType: {
-      _id: string
-      name: string
-    },
-    estateType: {
-      _id: string
-      name: string
-    },
+    postTypeId: string,
+    estateTypeId: string,
     forSaleOrRent: string,
     status: string,
     location: {
@@ -66,8 +59,8 @@ class PostService {
         title,
         address,
         ownerId,
-        postType,
-        estateType,
+        postTypeId,
+        estateTypeId,
         forSaleOrRent,
         status,
         location,
