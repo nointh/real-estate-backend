@@ -14,6 +14,7 @@ import UserController from "@/resources/controllers/user.controller"
 import EstateTypeController from './resources/controllers/estateType.controller'
 import PostTypeController from './resources/controllers/postType.controller'
 import PriceUnitController from './resources/controllers/priceUnit.controller'
+import ImageUploaderController from './resources/controllers/imageUploader.controller'
 validateEnv()
 
 const app = new App(
@@ -28,6 +29,7 @@ const app = new App(
     new EstateTypeController(),
     new PostTypeController(),
     new PriceUnitController(),
+    new ImageUploaderController(),
   ],
   Number(process.env.PORT)
 )
