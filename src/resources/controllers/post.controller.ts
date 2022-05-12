@@ -84,6 +84,8 @@ class PostController implements Controller{
                 legalDocuments,
                 publishedDate,
                 expiredDate,
+                expiredDate,
+                expiredDate,
                 price,
                 priceType,
                 area,
@@ -99,7 +101,7 @@ class PostController implements Controller{
                 belongToProject
             )
             res.status(201).json({ token })
-        } catch( error:any ){
+        } catch( error :any ){
             next(new HttpException(400, error.message))
         }
     }

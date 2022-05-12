@@ -12,7 +12,10 @@ export default interface PostDto{
         phone: string
     },
     status: string,
-    postType: string,
+    postType: {
+        name: string,
+        title_color: string
+    },
     estateType: string,
     forSaleOrRent: string,
     location: {
@@ -38,6 +41,8 @@ export default interface PostDto{
     legalDocuments: string,
     publishedDate: string,
     expiredDate: string,
+    approvedDate: string,
+    reviewExpireDate: string,
     price: number,
     priceType: string,
     area: number,
@@ -64,7 +69,10 @@ export const parsePostDto = (post: any) : PostDto =>{
             phone: post._id
         },
         status: post.status,
-        postType: post.postTypeId,
+        postType: {
+            name: post.postTypeId,
+            title_color: post.postTypeId
+        },
         estateType: post.estateTypeId,
         forSaleOrRent: post.forSaleOrRent,
         location: {
@@ -90,6 +98,8 @@ export const parsePostDto = (post: any) : PostDto =>{
         legalDocuments: post.legalDocuments,
         publishedDate: post.publishedDate,
         expiredDate: post.expiredDate,
+        approvedDate: post.approvedDate,
+        reviewExpireDate: post.reviewExpireDate,
         price: post.price,
         priceType: post.priceType,
         area: post.area,

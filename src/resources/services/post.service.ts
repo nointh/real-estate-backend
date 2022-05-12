@@ -46,6 +46,8 @@ class PostService {
     legalDocuments: string,
     publishedDate: string,
     expiredDate: string,
+    approvedDate: string,
+    reviewExpireDate: string,
     price: number,
     priceType: string,
     area: number,
@@ -78,6 +80,8 @@ class PostService {
         legalDocuments,
         publishedDate,
         expiredDate,
+        approvedDate,
+        reviewExpireDate,
         price,
         priceType,
         area,
@@ -114,7 +118,8 @@ class PostService {
       let postDto = parsePostDto(post)
       postDto.owner.name = owner?.fullname || ''
       postDto.owner.phone = owner?.phone || ''
-      postDto.postType = postType?.name || ''
+      postDto.postType.name = postType?.name || ''
+      postDto.postType.title_color = postType?.title_color || ''
       postDto.estateType = estateType?.name || ''
       postDto.priceType = priceUnit?.label || ''
 
@@ -145,7 +150,8 @@ class PostService {
         let postDto = parsePostDto(element)
         postDto.owner.name = owner?.fullname || ''
         postDto.owner.phone = owner?.phone || ''
-        postDto.postType = postType?.name || ''
+        postDto.postType.name = postType?.name || ''
+        postDto.postType.title_color = postType?.title_color || ''
         postDto.estateType = estateType?.name || ''
         postDto.priceType = priceUnit?.label || ''
 
@@ -158,6 +164,7 @@ class PostService {
         throw new Error("Cannot get post list")
       }
     } catch (error) {
+      console.log(error)
       throw new Error("Unable to get post list")
     }
   }
@@ -178,7 +185,8 @@ class PostService {
         let postDto = parsePostDto(element)
         postDto.owner.name = owner?.fullname || ''
         postDto.owner.phone = owner?.phone || ''
-        postDto.postType = postType?.name || ''
+        postDto.postType.name = postType?.name || ''
+        postDto.postType.title_color = postType?.title_color || ''
         postDto.estateType = estateType?.name || ''
         postDto.priceType = priceUnit?.label || ''
 
