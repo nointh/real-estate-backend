@@ -11,6 +11,7 @@ export default interface PostDto{
         email: string,
         phone: string
     },
+    status: string,
     postType: string,
     estateType: string,
     forSaleOrRent: string,
@@ -44,15 +45,62 @@ export default interface PostDto{
     bathroomNumber: number,
     bedroomNumber: number,
     direction: string,
-    funiture: string,
+    furniture: string,
     width: number,
     depth: number,
     roadWidth: number,
     facade: number
 }
 
-// export const parsePostDto = (post: Post) : PostDto =>{
-//     return {
-        
-//     }
-// }
+export const parsePostDto = (post: any) : PostDto =>{
+    return {
+        _id: post._id,
+        title: post.title,
+        address: post.address,
+        owner: {
+            name: post._id,
+            avatar: post._id,
+            email: post._id,
+            phone: post._id
+        },
+        status: post.status,
+        postType: post.postTypeId,
+        estateType: post.estateTypeId,
+        forSaleOrRent: post.forSaleOrRent,
+        location: {
+            CityName: post.location.CityName,
+            DistrictName: post.location.DistrictName,
+            DistrictPrefix: post.location.DistrictPrefix,
+            Label: post.location.Label,
+            StreetName: post.location.StreetName,
+            StreetPrefix: post.location.StreetPrefix,
+            WardName: post.location.WardName,
+            WardPrefix: post.location.WardPrefix
+        },
+        cor: {
+            lat: post.cor.lat,
+            Lng: post.cor.Lng
+        },
+        belongToProject: {
+            projectId: post.belongToProject.projectId,
+            projectName: post.belongToProject.projectName
+        },
+        description: post.description,
+        images: post.images,
+        legalDocuments: post.legalDocuments,
+        publishedDate: post.publishedDate,
+        expiredDate: post.expiredDate,
+        price: post.price,
+        priceType: post.priceType,
+        area: post.area,
+        floorNumber: post.floorNumber,
+        bathroomNumber: post.bathroomNumber,
+        bedroomNumber: post.bedroomNumber,
+        direction: post.direction,
+        furniture: post.funiture,
+        width: post.width,
+        depth: post.depth,
+        roadWidth: post.roadWidth,
+        facade: post.facade
+    }
+}

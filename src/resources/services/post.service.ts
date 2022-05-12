@@ -1,8 +1,17 @@
 import PostModel from "@/resources/models/post.model"
 import IPost from "@/resources/interfaces/post.interface"
+import postDtoInterface, { parsePostDto } from "../interfaces/postDto.interface"
+import userModel from "../models/user.model"
+import postTypeModel from "../models/postType.model"
+import estateTypeModel from "../models/estateType.model"
+import priceUnitModel from "../models/priceUnit.model"
 
 class PostService {
   private post = PostModel
+  private user = userModel
+  private postType = postTypeModel
+  private estateType = estateTypeModel
+  private priceUnit = priceUnitModel
 
   public async create(
     title: string,
@@ -98,13 +107,25 @@ class PostService {
   public async getDetail(_id: any): Promise<any> {
     try {
       let post = await this.post.findById(_id)
+      let owner = await this.user.findById(post?.ownerId)
+      let postType = await this.postType.findById(post?.postTypeId)
+      let estateType = await this.estateType.findById(post?.estateTypeId)
+      let priceUnit = await this.priceUnit.findById(post?.priceType)
+
+      let postDto = parsePostDto(post)
+      postDto.owner.name = owner?.fullname || ''
+      postDto.owner.phone = owner?.phone || ''
+      postDto.postType = postType?.name || ''
+      postDto.estateType = estateType?.name || ''
+      postDto.priceType = priceUnit?.label || ''
 
       if (post) {
-        return post
+        return postDto
       } else {
         throw new Error("Cannot find post")
       }
     } catch (error) {
+      console.log(error)
       throw new Error("Unable to approve post")
     }
   }
@@ -112,9 +133,28 @@ class PostService {
   public async getListPostByPurpose(purpose: any): Promise<any> {
     try {
       let docs = await this.post.find({ forSaleOrRent: purpose }).exec()
+      var dataDtos: postDtoInterface[] = []
+
+      for (let index = 0; index < docs.length; index++) {
+        const element = docs[index];
+        
+        let owner = await this.user.findById(element?.ownerId)
+        let postType = await this.postType.findById(element?.postTypeId)
+        let estateType = await this.estateType.findById(element?.estateTypeId)
+        let priceUnit = await this.priceUnit.findById(element?.priceType)
+
+        let postDto = parsePostDto(element)
+        postDto.owner.name = owner?.fullname || ''
+        postDto.owner.phone = owner?.phone || ''
+        postDto.postType = postType?.name || ''
+        postDto.estateType = estateType?.name || ''
+        postDto.priceType = priceUnit?.label || ''
+
+        dataDtos.push(postDto)
+      }
 
       if (docs) {
-        return docs
+        return dataDtos
       } else {
         throw new Error("Cannot get post list")
       }
@@ -126,9 +166,28 @@ class PostService {
   public async getListPostByStatus(status: any): Promise<any> {
     try {
       let docs = await this.post.find({ status: status }).exec()
+      var dataDtos: postDtoInterface[] = []
+
+      for (let index = 0; index < docs.length; index++) {
+        const element = docs[index];
+        
+        let owner = await this.user.findById(element?.ownerId)
+        let postType = await this.postType.findById(element?.postTypeId)
+        let estateType = await this.estateType.findById(element?.estateTypeId)
+        let priceUnit = await this.priceUnit.findById(element?.priceType)
+
+        let postDto = parsePostDto(element)
+        postDto.owner.name = owner?.fullname || ''
+        postDto.owner.phone = owner?.phone || ''
+        postDto.postType = postType?.name || ''
+        postDto.estateType = estateType?.name || ''
+        postDto.priceType = priceUnit?.label || ''
+
+        dataDtos.push(postDto)
+      }
 
       if (docs) {
-        return docs
+        return dataDtos
       } else {
         throw new Error("Cannot get post list")
       }
