@@ -17,8 +17,8 @@ class App {
     }
     
     private initialiseMiddleware(): void {
-        //this.express.use(cors())
-        this.express.use(express.json())
+        this.express.use(cors())
+        this.express.use(express.json({limit: '50mb'}))
         this.express.use(express.urlencoded({ extended: false }));
     }
     private initialiseControllers(controllers: Controller[]): void{
@@ -37,7 +37,7 @@ class App {
 
     }
     public listen(): void{
-        this.express.listen(this.port, ()=>{
+        this.express.listen(this.port || 3031, ()=>{
             console.log(`server is running on port ${this.port}`)
         })
     }

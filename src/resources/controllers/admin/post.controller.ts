@@ -25,6 +25,11 @@ class PostController implements Controller {
       validationMiddleware(validate.decline),
       this.decline
     )
+    this.router.post(
+      `${this.path}/terminate`,
+      validationMiddleware(validate.decline),
+      this.terminate
+    )
   }
   private approve = async (
     req: Request,
@@ -32,8 +37,8 @@ class PostController implements Controller {
     next: NextFunction
   ): Promise<Response | void> => {
     try {
-      const { username } = req.body
-      const token = await this.PostService.approve(username)
+      const { id } = req.body
+      const token = await this.PostService.approve(id)
       res.status(201).json({ token })
     } catch (error: any) {
       next(new HttpException(400, error.message))
@@ -45,8 +50,21 @@ class PostController implements Controller {
     next: NextFunction
   ): Promise<Response | void> => {
     try {
-      const { username } = req.body
-      const token = await this.PostService.decline(username)
+      const { id } = req.body
+      const token = await this.PostService.decline(id)
+      res.status(201).json({ token })
+    } catch (error: any) {
+      next(new HttpException(400, error.message))
+    }
+  }
+  private terminate = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<Response | void> => {
+    try {
+      const { id } = req.body
+      const token = await this.PostService.terminate(id)
       res.status(201).json({ token })
     } catch (error: any) {
       next(new HttpException(400, error.message))
