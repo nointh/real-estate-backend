@@ -113,11 +113,11 @@ class PostService {
       let priceUnit = await this.priceUnit.findById(post?.priceType)
 
       let postDto = parsePostDto(post)
-      postDto.owner.name = owner?.fullname || ''
-      postDto.owner.phone = owner?.phone || ''
-      postDto.postType = postType?.name || ''
-      postDto.estateType = estateType?.name || ''
-      postDto.priceType = priceUnit?.label || ''
+      postDto.owner.name = owner?.fullname || ""
+      postDto.owner.phone = owner?.phone || ""
+      postDto.postType = postType?.name || ""
+      postDto.estateType = estateType?.name || ""
+      postDto.priceType = priceUnit?.label || ""
 
       if (post) {
         return postDto
@@ -136,19 +136,19 @@ class PostService {
       var dataDtos: postDtoInterface[] = []
 
       for (let index = 0; index < docs.length; index++) {
-        const element = docs[index];
-        
+        const element = docs[index]
+
         let owner = await this.user.findById(element?.ownerId)
         let postType = await this.postType.findById(element?.postTypeId)
         let estateType = await this.estateType.findById(element?.estateTypeId)
         let priceUnit = await this.priceUnit.findById(element?.priceType)
 
         let postDto = parsePostDto(element)
-        postDto.owner.name = owner?.fullname || ''
-        postDto.owner.phone = owner?.phone || ''
-        postDto.postType = postType?.name || ''
-        postDto.estateType = estateType?.name || ''
-        postDto.priceType = priceUnit?.label || ''
+        postDto.owner.name = owner?.fullname || ""
+        postDto.owner.phone = owner?.phone || ""
+        postDto.postType = postType?.name || ""
+        postDto.estateType = estateType?.name || ""
+        postDto.priceType = priceUnit?.label || ""
 
         dataDtos.push(postDto)
       }
@@ -169,19 +169,19 @@ class PostService {
       var dataDtos: postDtoInterface[] = []
 
       for (let index = 0; index < docs.length; index++) {
-        const element = docs[index];
-        
+        const element = docs[index]
+
         let owner = await this.user.findById(element?.ownerId)
         let postType = await this.postType.findById(element?.postTypeId)
         let estateType = await this.estateType.findById(element?.estateTypeId)
         let priceUnit = await this.priceUnit.findById(element?.priceType)
 
         let postDto = parsePostDto(element)
-        postDto.owner.name = owner?.fullname || ''
-        postDto.owner.phone = owner?.phone || ''
-        postDto.postType = postType?.name || ''
-        postDto.estateType = estateType?.name || ''
-        postDto.priceType = priceUnit?.label || ''
+        postDto.owner.name = owner?.fullname || ""
+        postDto.owner.phone = owner?.phone || ""
+        postDto.postType = postType?.name || ""
+        postDto.estateType = estateType?.name || ""
+        postDto.priceType = priceUnit?.label || ""
 
         dataDtos.push(postDto)
       }
@@ -217,7 +217,7 @@ class PostService {
       if (post) {
         let result = await post.update({
           $set: {
-            status: "published",
+            status: "approved",
           },
         })
         return result
