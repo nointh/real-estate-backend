@@ -36,7 +36,8 @@
     "joi": "^17.6.0",
     "jsonwebtoken": "^8.5.1",
     "module-alias": "^2.2.2",
-    "mongoose": "^6.2.11"
+    "mongoose": "^6.2.11",
+    "mongoose-slug-generator": "^1.0.4"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",

@@ -29,6 +29,10 @@ class PostController implements Controller{
             `${this.path}/list-post-by-status`,
             this.getListPostByStatus
         )
+        this.router.get(
+            `${this.path}/slug`,
+            this.getPostBySlug
+        )
         this.router.post(
             `${this.path}/delete`,
             this.delete
@@ -112,9 +116,31 @@ class PostController implements Controller{
     ) : Promise<Response | void> => {
         try {
             let postId = req.query.id?.toString()
-            const token = await this.PostService.getDetail(postId)
+            const post = await this.PostService.getDetail(postId)
 
-            res.status(200).json({ token })
+            res.status(200).json({ post })
+        } catch( error:any ){
+            next(new HttpException(400, error.message))
+        }
+    }
+    private getPostBySlug = async ( 
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ) : Promise<Response | void> => {
+        try {
+            let slug = req.query.slug?.toString()
+            if (!slug)
+            {
+                const slugs = await this.PostService.getAllPostSlugs()
+                res.status(200).json({ slugs })
+            }
+            else
+            {
+                const post = await this.PostService.getPostBySlug(slug)
+                res.status(200).json({ post })
+            }
+
         } catch( error:any ){
             next(new HttpException(400, error.message))
         }
