@@ -121,6 +121,28 @@ class PostController implements Controller {
     }
   }
 
+  private getPostBySlug = async ( 
+    req: Request,
+    res: Response,
+    next: NextFunction
+    ) : Promise<Response | void> => {
+        try {
+            let slug = req.query.slug?.toString()
+            if (!slug)
+            {
+                const slugs = await this.PostService.getAllPostSlugs()
+                res.status(200).json({ slugs })
+            }
+            else
+            {
+                const post = await this.PostService.getPostBySlug(slug)
+                res.status(200).json({ post })
+            }
+
+        } catch( error:any ){
+            next(new HttpException(400, error.message))
+        }
+    }
   private delete = async (
     req: Request,
     res: Response,

@@ -135,6 +135,58 @@ class PostService {
       throw new Error("Unable to approve post")
     }
   }
+  public async getPostBySlug(slug: string | undefined): Promise<any> {
+    try {
+      if (slug == undefined) 
+        throw new Error("No slug available")
+      let post = await this.post.findOne({slug})
+      let owner = await this.user.findById(post?.ownerId)
+      let postType = await this.postType.findById(post?.postTypeId)
+      let estateType = await this.estateType.findById(post?.estateTypeId)
+      let priceUnit = await this.priceUnit.findById(post?.priceType)
+
+      let postDto = parsePostDto(post)
+      postDto.owner.name = owner?.fullname || ''
+      postDto.owner.phone = owner?.phone || ''
+      postDto.postType.name = postType?.name || ''
+      postDto.postType.title_color = postType?.title_color || ''
+      postDto.estateType = estateType?.name || ''
+      postDto.priceType = priceUnit?.label || ''
+
+      if (post) {
+        return postDto
+      } else {
+        throw new Error("Cannot find post")
+      }
+    } catch (error) {
+      console.log(error)
+      throw new Error("Unable to approve post")
+    }
+  }
+
+
+  public async getAllPostSlugs(): Promise<any> {
+    try {
+      let posts = await this.post.find()
+      const filterPosts = posts.filter(element => element?.slug)
+      const result = await Promise.all(filterPosts.map(async (element) => {
+        let postSlug = element?.slug
+        let estateType = await this.estateType.findById(element?.estateTypeId)
+        let purpose = element?.forSaleOrRent
+        let typeSlug = ''
+        if (purpose == 'rent')
+          typeSlug = 'thue-' + estateType?.slug
+
+        else
+          typeSlug = 'ban-' + estateType?.slug
+        return { params: { estateTypeSlug: typeSlug, estatePostSlug: postSlug } }
+      }))
+      return result
+    } catch (error) {
+      console.log(error)
+      throw new Error(`Unable to get post slug due to error: ${error}`)
+    }
+  }
 
   public async getWithParams(
     status: string,

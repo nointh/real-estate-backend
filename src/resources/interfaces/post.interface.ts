@@ -51,5 +51,6 @@ export default interface IPost extends Document{
     width: number,
     depth: number,
     roadWidth: number,
-    facade: number
+    facade: number,
+    slug: string
 }

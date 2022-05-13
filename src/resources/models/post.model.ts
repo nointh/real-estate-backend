@@ -1,7 +1,10 @@
 import { Schema, model } from 'mongoose'
 import IPost from '@/resources/interfaces/post.interface'
 import { number, object } from 'joi'
-
+import slugify from 'slugify'
+import mongoose from 'mongoose'
+const slug = require('mongoose-slug-generator')
+mongoose.plugin(slug)
 const PostSchema = new Schema(
     {
         title: {
@@ -152,10 +155,29 @@ const PostSchema = new Schema(
         },
         facade: {
             type: Number
+        },
+        slug:{
+            type:String,
+            slug: "slug",
+            unique: true
         }
     },
     {
         timestamps: true
     }
 )
+PostSchema.pre('save', async function (next) {
+    if (!this.isModified("title"))
+        return next()
+    this.slug = normalizedVNString(this.title)
+
+    next()
+})
+
+const normalizedVNString = (str:string) =>{
+    return str.normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/đ/g, "d")
+        .replace(/Đ/g, "D");
+}
 export default model<IPost>("Post", PostSchema)
