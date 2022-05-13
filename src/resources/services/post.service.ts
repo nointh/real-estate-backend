@@ -46,6 +46,8 @@ class PostService {
     legalDocuments: string,
     publishedDate: string,
     expiredDate: string,
+    approvedDate: string,
+    reviewExpireDate: string,
     price: number,
     priceType: string,
     area: number,
@@ -79,6 +81,8 @@ class PostService {
         legalDocuments,
         publishedDate,
         expiredDate,
+        approvedDate,
+        reviewExpireDate,
         price,
         priceType,
         area,
@@ -113,11 +117,12 @@ class PostService {
       let priceUnit = await this.priceUnit.findById(post?.priceType)
 
       let postDto = parsePostDto(post)
-      postDto.owner.name = owner?.fullname || ""
-      postDto.owner.phone = owner?.phone || ""
-      postDto.postType = postType?.name || ""
-      postDto.estateType = estateType?.name || ""
-      postDto.priceType = priceUnit?.label || ""
+      postDto.owner.name = owner?.fullname || ''
+      postDto.owner.phone = owner?.phone || ''
+      postDto.postType.name = postType?.name || ''
+      postDto.postType.title_color = postType?.title_color || ''
+      postDto.estateType = estateType?.name || ''
+      postDto.priceType = priceUnit?.label || ''
 
       if (post) {
         return postDto
@@ -144,11 +149,12 @@ class PostService {
         let priceUnit = await this.priceUnit.findById(element?.priceType)
 
         let postDto = parsePostDto(element)
-        postDto.owner.name = owner?.fullname || ""
-        postDto.owner.phone = owner?.phone || ""
-        postDto.postType = postType?.name || ""
-        postDto.estateType = estateType?.name || ""
-        postDto.priceType = priceUnit?.label || ""
+        postDto.owner.name = owner?.fullname || ''
+        postDto.owner.phone = owner?.phone || ''
+        postDto.postType.name = postType?.name || ''
+        postDto.postType.title_color = postType?.title_color || ''
+        postDto.estateType = estateType?.name || ''
+        postDto.priceType = priceUnit?.label || ''
 
         dataDtos.push(postDto)
       }
@@ -159,6 +165,7 @@ class PostService {
         throw new Error("Cannot get post list")
       }
     } catch (error) {
+      console.log(error)
       throw new Error("Unable to get post list")
     }
   }
@@ -177,11 +184,12 @@ class PostService {
         let priceUnit = await this.priceUnit.findById(element?.priceType)
 
         let postDto = parsePostDto(element)
-        postDto.owner.name = owner?.fullname || ""
-        postDto.owner.phone = owner?.phone || ""
-        postDto.postType = postType?.name || ""
-        postDto.estateType = estateType?.name || ""
-        postDto.priceType = priceUnit?.label || ""
+        postDto.owner.name = owner?.fullname || ''
+        postDto.owner.phone = owner?.phone || ''
+        postDto.postType.name = postType?.name || ''
+        postDto.postType.title_color = postType?.title_color || ''
+        postDto.estateType = estateType?.name || ''
+        postDto.priceType = priceUnit?.label || ''
 
         dataDtos.push(postDto)
       }

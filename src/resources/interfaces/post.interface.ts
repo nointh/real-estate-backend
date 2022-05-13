@@ -38,6 +38,8 @@ export default interface IPost extends Document{
     legalDocuments: string,
     publishedDate: string,
     expiredDate: string,
+    approvedDate: string,
+    reviewExpireDate: string,
     price: number,
     priceType: string,
     area: number,

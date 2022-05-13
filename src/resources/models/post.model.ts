@@ -111,6 +111,12 @@ const PostSchema = new Schema(
         expiredDate: {
             type: String
         },
+        approvedDate: {
+            type: String
+        },
+        reviewExpireDate: {
+            type: String
+        },
         price: {
             type: Number
         },
