@@ -16,6 +16,7 @@ class PostController implements Controller {
     this.router.post(`${this.path}/upload`, this.create)
     this.router.get(`${this.path}/get`, this.get)
     this.router.post(`${this.path}/delete`, this.delete)
+    this.router.get(`${this.path}/slug`, this.getSlug)
   }
   private create = async (
     req: Request,
@@ -121,7 +122,7 @@ class PostController implements Controller {
     }
   }
 
-  private getPostBySlug = async ( 
+  private getSlug = async ( 
     req: Request,
     res: Response,
     next: NextFunction
