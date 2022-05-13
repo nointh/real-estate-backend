@@ -5,6 +5,7 @@ import userModel from "../models/user.model"
 import postTypeModel from "../models/postType.model"
 import estateTypeModel from "../models/estateType.model"
 import priceUnitModel from "../models/priceUnit.model"
+import { string } from "joi"
 
 class PostService {
   private post = PostModel
@@ -117,12 +118,12 @@ class PostService {
       let priceUnit = await this.priceUnit.findById(post?.priceType)
 
       let postDto = parsePostDto(post)
-      postDto.owner.name = owner?.fullname || ''
-      postDto.owner.phone = owner?.phone || ''
-      postDto.postType.name = postType?.name || ''
-      postDto.postType.title_color = postType?.title_color || ''
-      postDto.estateType = estateType?.name || ''
-      postDto.priceType = priceUnit?.label || ''
+      postDto.owner.name = owner?.fullname || ""
+      postDto.owner.phone = owner?.phone || ""
+      postDto.postType.name = postType?.name || ""
+      postDto.postType.title_color = postType?.title_color || ""
+      postDto.estateType = estateType?.name || ""
+      postDto.priceType = priceUnit?.label || ""
 
       if (post) {
         return postDto
@@ -135,9 +136,25 @@ class PostService {
     }
   }
 
-  public async getListPostByPurpose(purpose: any): Promise<any> {
+  public async getWithParams(
+    status: string,
+    postType: string,
+    estateType: string
+  ): Promise<any> {
+
     try {
-      let docs = await this.post.find({ forSaleOrRent: purpose }).exec()
+      let docs = await this.post.find({
+        status: {
+          $regex: new RegExp(status, 'i'),
+        },
+        postTypeId: {
+          $regex: new RegExp(postType, 'i'),
+        },
+        estateTypeId: {
+          $regex: new RegExp(estateType, 'i'),
+        },
+      })
+
       var dataDtos: postDtoInterface[] = []
 
       for (let index = 0; index < docs.length; index++) {
@@ -149,12 +166,12 @@ class PostService {
         let priceUnit = await this.priceUnit.findById(element?.priceType)
 
         let postDto = parsePostDto(element)
-        postDto.owner.name = owner?.fullname || ''
-        postDto.owner.phone = owner?.phone || ''
-        postDto.postType.name = postType?.name || ''
-        postDto.postType.title_color = postType?.title_color || ''
-        postDto.estateType = estateType?.name || ''
-        postDto.priceType = priceUnit?.label || ''
+        postDto.owner.name = owner?.fullname || ""
+        postDto.owner.phone = owner?.phone || ""
+        postDto.postType.name = postType?.name || ""
+        postDto.postType.title_color = postType?.title_color || ""
+        postDto.estateType = estateType?.name || ""
+        postDto.priceType = priceUnit?.label || ""
 
         dataDtos.push(postDto)
       }
@@ -166,40 +183,6 @@ class PostService {
       }
     } catch (error) {
       console.log(error)
-      throw new Error("Unable to get post list")
-    }
-  }
-
-  public async getListPostByStatus(status: any): Promise<any> {
-    try {
-      let docs = await this.post.find({ status: status }).exec()
-      var dataDtos: postDtoInterface[] = []
-
-      for (let index = 0; index < docs.length; index++) {
-        const element = docs[index]
-
-        let owner = await this.user.findById(element?.ownerId)
-        let postType = await this.postType.findById(element?.postTypeId)
-        let estateType = await this.estateType.findById(element?.estateTypeId)
-        let priceUnit = await this.priceUnit.findById(element?.priceType)
-
-        let postDto = parsePostDto(element)
-        postDto.owner.name = owner?.fullname || ''
-        postDto.owner.phone = owner?.phone || ''
-        postDto.postType.name = postType?.name || ''
-        postDto.postType.title_color = postType?.title_color || ''
-        postDto.estateType = estateType?.name || ''
-        postDto.priceType = priceUnit?.label || ''
-
-        dataDtos.push(postDto)
-      }
-
-      if (docs) {
-        return dataDtos
-      } else {
-        throw new Error("Cannot get post list")
-      }
-    } catch (error) {
       throw new Error("Unable to get post list")
     }
   }
