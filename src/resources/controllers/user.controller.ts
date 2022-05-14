@@ -26,12 +26,12 @@ class UserController implements Controller{
             this.login
         )
         this.router.get(
-            `${this.path}`,
+            `${this.path}/currentUser`,
             authenticated,
-            this.getUser
+            this.getCurrentUser
         ),
         this.router.put(
-            `${this.path}`,
+            `${this.path}/currentUser`,
             authenticated,
             this.update
         )
@@ -39,6 +39,10 @@ class UserController implements Controller{
             `${this.path}/changePassword`,
             authenticated,
             this.changePassword
+        )
+        this.router.get(
+            `${this.path}/user`,
+            this.getUser
         )
     }
     private register = async (
@@ -77,7 +81,7 @@ class UserController implements Controller{
             next(new HttpException(400, error.message))
         }
     }
-    private getUser = async (
+    private getCurrentUser = async (
         req: Request,
         res: Response,
         next: NextFunction
@@ -87,6 +91,33 @@ class UserController implements Controller{
                 return next(new HttpException(401,"Unauthorized"))
             }
             res.status(200).json({ user: req.user })
+        } catch( error:any ){
+            next(new HttpException(400, error.message))
+        }
+    }
+    private getUser = async (
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ) : Promise<Response | void> => {
+        try {
+            const { id, username } = req.params
+            if (!id && !username){
+                const users = await this.UserService.getAllUsers()
+                res.status(200).json({ users: users})
+            }
+            else{
+                if (id && !username)
+                {
+                    const user = await this.UserService.getUserById(id)
+                    res.status(200).json({ user: user})
+                }
+                else if (!id && username)
+                {
+                    const user = await this.UserService.getUserByUsername(username)
+                    res.status(200).json({ user: user})
+                }
+            }
         } catch( error:any ){
             next(new HttpException(400, error.message))
         }

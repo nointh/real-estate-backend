@@ -123,5 +123,38 @@ class UserService {
             throw new Error (`Unable to update user information - Error: ${error}`)
         }
     }
+    public async getAllUsers(){
+        try {
+            const users = await this.user.find()
+            
+            return users
+        } catch (error: any) {
+            throw new Error (`Unable to get all users - Error: ${error}`)
+        }
+    }
+    public async getUserById(id: string){
+        try {
+            const user = await this.user.findById(id)
+            if (!user)
+            {
+                throw new Error(`Id ${id} is not existed` )
+            }
+            return user
+        } catch (error: any) {
+            throw new Error (`Unable to get user by id - Error: ${error}`)
+        }
+    }
+    public async getUserByUsername(username: string){
+        try {
+            const user = await this.user.findOne()
+            if (!user)
+            {
+                throw new Error(`Username ${username} is not existed`)
+            }
+            return user
+        } catch (error: any) {
+            throw new Error (`Unable to get user by username - Error: ${error}`)
+        }
+    }
 }
 export default UserService
