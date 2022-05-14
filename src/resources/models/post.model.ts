@@ -1,7 +1,6 @@
 import { Schema, model } from 'mongoose'
 import IPost from '@/resources/interfaces/post.interface'
 import { number, object } from 'joi'
-import slugify from 'slugify'
 import mongoose from 'mongoose'
 const slug = require('mongoose-slug-generator')
 mongoose.plugin(slug)

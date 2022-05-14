@@ -15,6 +15,10 @@ class ImageUploaderController implements Controller {
             `${this.path}/multiple`,
             this.uploadMultipleImages
         )
+        this.router.post(
+            `${this.path}/single`,
+            this.uploadSingleImage
+        )
     }
 
     private uploadMultipleImages = async (
