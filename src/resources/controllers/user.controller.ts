@@ -162,5 +162,23 @@ class UserController implements Controller{
             next(new HttpException(400, error.message))
         }
     }
+    private delete = async (
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ) : Promise<Response | void> => {
+        try {
+            const { id } = req.params
+            const user = await this.UserService.deleteUser(id)
+            if (user){
+                res.status(200).json({ message: "Delete user successfully", user: user })
+            }
+            else{
+                next(new HttpException(401,"Cannot delete user"))
+            }
+        } catch( error:any ){
+            next(new HttpException(400, error.message))
+        }
+    }
 }
 export default UserController

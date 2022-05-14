@@ -156,5 +156,17 @@ class UserService {
             throw new Error (`Unable to get user by username - Error: ${error}`)
         }
     }
+    public async deleteUser(id: string){
+        try {
+            const user = await this.user.findByIdAndDelete(id)
+            if (!user)
+            {
+                throw new Error(`Username ${user} is not existed`)
+            }
+            return user
+        } catch (error: any) {
+            throw new Error (`Unable to get user by username - Error: ${error}`)
+        }
+    }
 }
 export default UserService
