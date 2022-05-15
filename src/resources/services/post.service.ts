@@ -61,6 +61,7 @@ class PostService {
     depth: number,
     roadWidth: number,
     facade: number,
+    slug: string,
     belongToProject: {
       projectId: number
       projectName: string
@@ -96,6 +97,7 @@ class PostService {
         depth,
         roadWidth,
         facade,
+        slug,
         belongToProject,
       })
 
@@ -135,6 +137,7 @@ class PostService {
       throw new Error("Unable to approve post")
     }
   }
+
   public async getPostBySlug(slug: string | undefined): Promise<any> {
     try {
       if (slug == undefined) 
@@ -163,7 +166,6 @@ class PostService {
       throw new Error("Unable to approve post")
     }
   }
-
 
   public async getAllPostSlugs(): Promise<any> {
     try {

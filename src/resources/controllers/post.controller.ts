@@ -50,6 +50,7 @@ class PostController implements Controller {
         depth,
         roadWidth,
         facade,
+        slug,
         belongToProject,
       } = req.body
       const token = await this.PostService.create(
@@ -81,6 +82,7 @@ class PostController implements Controller {
         depth,
         roadWidth,
         facade,
+        slug,
         belongToProject
       )
       res.status(201).json({ token })
@@ -120,7 +122,6 @@ class PostController implements Controller {
       next(new HttpException(400, error.message))
     }
   }
-
   private getPostBySlug = async ( 
     req: Request,
     res: Response,
@@ -142,7 +143,7 @@ class PostController implements Controller {
         } catch( error:any ){
             next(new HttpException(400, error.message))
         }
-    }
+  }
   private delete = async (
     req: Request,
     res: Response,
