@@ -6,6 +6,7 @@ export default interface PostDto{
     title: string,
     address: string,
     owner: {
+        _id: string,
         name: string,
         avatar: string,
         email: string,
@@ -54,7 +55,8 @@ export default interface PostDto{
     width: number,
     depth: number,
     roadWidth: number,
-    facade: number
+    facade: number,
+    slug: string,
 }
 
 export const parsePostDto = (post: any) : PostDto =>{
@@ -63,6 +65,7 @@ export const parsePostDto = (post: any) : PostDto =>{
         title: post.title,
         address: post.address,
         owner: {
+            _id: post.ownerId,
             name: post._id,
             avatar: post._id,
             email: post._id,
@@ -111,6 +114,7 @@ export const parsePostDto = (post: any) : PostDto =>{
         width: post.width,
         depth: post.depth,
         roadWidth: post.roadWidth,
-        facade: post.facade
+        facade: post.facade,
+        slug: post.slug
     }
 }
