@@ -101,12 +101,16 @@ class PostController implements Controller {
       let status = req.query.s?.toString()
       let postType = req.query.pt?.toString()
       let estateType = req.query.et?.toString()
+      let ownerId = req.query.oid?.toString()
+
 
       let data = undefined
 
       if (status == undefined) status = ""
       if (postType == undefined) postType = ""
       if (estateType == undefined) estateType = ""
+      if (ownerId == undefined) ownerId = ""
+
 
       if (postId != undefined) {
         data = await this.PostService.getDetail(postId)
@@ -114,7 +118,8 @@ class PostController implements Controller {
         data = await this.PostService.getWithParams(
           status,
           postType,
-          estateType
+          estateType,
+          ownerId,
         )
       }
 
