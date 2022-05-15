@@ -139,7 +139,8 @@ class PostService {
   public async getWithParams(
     status: string,
     postType: string,
-    estateType: string
+    estateType: string,
+    ownerId: string
   ): Promise<any> {
 
     try {
@@ -152,6 +153,9 @@ class PostService {
         },
         estateTypeId: {
           $regex: new RegExp(estateType, 'i'),
+        },
+        ownerId: {
+          $regex: new RegExp(ownerId, 'i'),
         },
       })
 
