@@ -33,7 +33,7 @@ class UserController implements Controller{
         this.router.put(
             `${this.path}/currentUser`,
             authenticated,
-            this.update
+            this.updateCurrentUser
         )
         this.router.post(
             `${this.path}/changePassword`,
@@ -43,6 +43,14 @@ class UserController implements Controller{
         this.router.get(
             `${this.path}/user`,
             this.getUser
+        ),
+        this.router.delete(
+            `${this.path}/user`,
+            this.delete
+        ),
+        this.router.put(
+            `${this.path}/user`,
+            this.update
         )
     }
     private register = async (
@@ -142,7 +150,7 @@ class UserController implements Controller{
             next(new HttpException(400, error.message))
         }
     }
-    private update = async (
+    private updateCurrentUser = async (
         req: Request,
         res: Response,
         next: NextFunction
@@ -175,6 +183,24 @@ class UserController implements Controller{
             }
             else{
                 next(new HttpException(401,"Cannot delete user"))
+            }
+        } catch( error:any ){
+            next(new HttpException(400, error.message))
+        }
+    }
+    private update = async (
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ) : Promise<Response | void> => {
+        try {
+            const { fullname, dateOfBirth, phone, email, cityId, districtId, wardId, streetId } = req.body      
+            const { id } = req.params
+            if (await this.UserService.update(id, fullname, dateOfBirth, phone, email, cityId, districtId, wardId, streetId)){
+                res.status(200).json({ message: "Update user successfully" })
+            }
+            else{
+                next(new HttpException(401,"Cannot update user"))
             }
         } catch( error:any ){
             next(new HttpException(400, error.message))
