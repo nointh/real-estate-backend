@@ -17,7 +17,6 @@ class DistrictController implements Controller {
   private initialiseRoutes() {
     this.router.get(
       `${this.path}/get`,
-      //   validationMiddleware(validate.decline),
       this.get
     )
   }

@@ -6,6 +6,14 @@ export default interface IProvince extends Document {
   slug: string
 }
 
+export default interface IBigProvince extends Document {
+  _id: string
+  cityName: string
+  slug: string
+  image: string
+  count: number
+}
+
 export default interface IDistrict extends Document {
   districtCode: string
   districtName: string

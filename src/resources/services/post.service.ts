@@ -5,7 +5,6 @@ import userModel from "../models/user.model"
 import postTypeModel from "../models/postType.model"
 import estateTypeModel from "../models/estateType.model"
 import priceUnitModel from "../models/priceUnit.model"
-import { string } from "joi"
 
 class PostService {
   private post = PostModel
@@ -140,21 +139,20 @@ class PostService {
 
   public async getPostBySlug(slug: string | undefined): Promise<any> {
     try {
-      if (slug == undefined) 
-        throw new Error("No slug available")
-      let post = await this.post.findOne({slug})
+      if (slug == undefined) throw new Error("No slug available")
+      let post = await this.post.findOne({ slug })
       let owner = await this.user.findById(post?.ownerId)
       let postType = await this.postType.findById(post?.postTypeId)
       let estateType = await this.estateType.findById(post?.estateTypeId)
       let priceUnit = await this.priceUnit.findById(post?.priceType)
 
       let postDto = parsePostDto(post)
-      postDto.owner.name = owner?.fullname || ''
-      postDto.owner.phone = owner?.phone || ''
-      postDto.postType.name = postType?.name || ''
-      postDto.postType.title_color = postType?.title_color || ''
-      postDto.estateType = estateType?.name || ''
-      postDto.priceType = priceUnit?.label || ''
+      postDto.owner.name = owner?.fullname || ""
+      postDto.owner.phone = owner?.phone || ""
+      postDto.postType.name = postType?.name || ""
+      postDto.postType.title_color = postType?.title_color || ""
+      postDto.estateType = estateType?.name || ""
+      postDto.priceType = priceUnit?.label || ""
 
       if (post) {
         return postDto
@@ -170,19 +168,20 @@ class PostService {
   public async getAllPostSlugs(): Promise<any> {
     try {
       let posts = await this.post.find()
-      const filterPosts = posts.filter(element => element?.slug)
-      const result = await Promise.all(filterPosts.map(async (element) => {
-        let postSlug = element?.slug
-        let estateType = await this.estateType.findById(element?.estateTypeId)
-        let purpose = element?.forSaleOrRent
-        let typeSlug = ''
-        if (purpose == 'rent')
-          typeSlug = 'thue-' + estateType?.slug
-
-        else
-          typeSlug = 'ban-' + estateType?.slug
-        return { params: { estateTypeSlug: typeSlug, estatePostSlug: postSlug } }
-      }))
+      const filterPosts = posts.filter((element) => element?.slug)
+      const result = await Promise.all(
+        filterPosts.map(async (element) => {
+          let postSlug = element?.slug
+          let estateType = await this.estateType.findById(element?.estateTypeId)
+          let purpose = element?.forSaleOrRent
+          let typeSlug = ""
+          if (purpose == "rent") typeSlug = "thue-" + estateType?.slug
+          else typeSlug = "ban-" + estateType?.slug
+          return {
+            params: { estateTypeSlug: typeSlug, estatePostSlug: postSlug },
+          }
+        })
+      )
       return result
     } catch (error) {
       console.log(error)
@@ -196,20 +195,19 @@ class PostService {
     estateType: string,
     ownerId: string
   ): Promise<any> {
-
     try {
       let docs = await this.post.find({
         status: {
-          $regex: new RegExp(status, 'i'),
+          $regex: new RegExp(status, "i"),
         },
         postTypeId: {
-          $regex: new RegExp(postType, 'i'),
+          $regex: new RegExp(postType, "i"),
         },
         estateTypeId: {
-          $regex: new RegExp(estateType, 'i'),
+          $regex: new RegExp(estateType, "i"),
         },
         ownerId: {
-          $regex: new RegExp(ownerId, 'i'),
+          $regex: new RegExp(ownerId, "i"),
         },
       })
 
@@ -247,12 +245,17 @@ class PostService {
 
   public async delete(_id: any): Promise<any> {
     try {
-      let result = await this.post.findByIdAndDelete(_id)
+      let post = await this.post.findOne({ _id: _id })
 
-      if (result) {
+      if (post) {
+        let result = await post.update({
+          $set: {
+            status: "deleted",
+          },
+        })
         return result
       } else {
-        throw new Error("Cannot delete post")
+        throw new Error("Cannot find post")
       }
     } catch (error) {
       throw new Error("Unable to delete post")
@@ -313,6 +316,22 @@ class PostService {
       }
     } catch (error) {
       throw new Error("Unable to terminate post")
+    }
+  }
+
+  public async count(_id: string): Promise<any> {
+    try {
+      let posts = await this.post.find({
+        "location.CityCode": _id,
+      })
+
+      if (posts) {
+        return posts.length
+      } else {
+        throw new Error("Cannot find post")
+      }
+    } catch (error) {
+      throw new Error("Unable to count post")
     }
   }
 }

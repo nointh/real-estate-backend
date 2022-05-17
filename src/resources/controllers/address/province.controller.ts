@@ -42,5 +42,6 @@ class ProvinceController implements Controller {
       next(new HttpException(400, error.message))
     }
   }
+  
 }
 export default ProvinceController

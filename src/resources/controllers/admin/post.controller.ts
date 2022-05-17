@@ -27,8 +27,18 @@ class PostController implements Controller {
     )
     this.router.post(
       `${this.path}/terminate`,
-      validationMiddleware(validate.decline),
+      // validationMiddleware(validate.decline),
       this.terminate
+    )
+    this.router.post(
+      `${this.path}/delete`,
+      // validationMiddleware(validate.decline),
+      this.delete
+    )
+    this.router.get(
+      `${this.path}/count`,
+      // validationMiddleware(validate.decline),
+      this.count
     )
   }
   private approve = async (
@@ -66,6 +76,36 @@ class PostController implements Controller {
       const { id } = req.body
       const token = await this.PostService.terminate(id)
       res.status(201).json({ token })
+    } catch (error: any) {
+      next(new HttpException(400, error.message))
+    }
+  }
+  private delete = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<Response | void> => {
+    try {
+      const { id } = req.body
+      const token = await this.PostService.delete(id)
+      res.status(201).json({ token })
+    } catch (error: any) {
+      next(new HttpException(400, error.message))
+    }
+  }
+  private count = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<Response | void> => {
+    try {
+      const provinceId = req.query.p?.toString() || ""
+
+      let data = undefined
+
+      data = await this.PostService.count(provinceId)
+
+      res.status(201).json({ data })
     } catch (error: any) {
       next(new HttpException(400, error.message))
     }
