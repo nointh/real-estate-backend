@@ -52,5 +52,6 @@ export default interface IPost extends Document{
     depth: number,
     roadWidth: number,
     facade: number,
-    slug: string
+    slug: string,
+    declineReasonId: string,
 }

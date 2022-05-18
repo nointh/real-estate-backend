@@ -155,10 +155,13 @@ const PostSchema = new Schema(
         facade: {
             type: Number
         },
-        slug:{
+        slug: {
             type:String,
             slug: "slug",
             unique: true
+        },
+        declineReasonId: {
+            type: String,
         }
     },
     {
