@@ -61,6 +61,7 @@ class PostService {
     roadWidth: number,
     facade: number,
     slug: string,
+    declineReasonId: string,
     belongToProject: {
       projectId: number
       projectName: string
@@ -97,6 +98,7 @@ class PostService {
         roadWidth,
         facade,
         slug,
+        declineReasonId,
         belongToProject,
       })
 
@@ -209,7 +211,44 @@ class PostService {
         ownerId: {
           $regex: new RegExp(ownerId, "i"),
         },
+        reviewExpireDate: 1
       })
+
+      var dataDtos: postDtoInterface[] = []
+
+      for (let index = 0; index < docs.length; index++) {
+        const element = docs[index]
+
+        let owner = await this.user.findById(element?.ownerId)
+        let postType = await this.postType.findById(element?.postTypeId)
+        let estateType = await this.estateType.findById(element?.estateTypeId)
+        let priceUnit = await this.priceUnit.findById(element?.priceType)
+
+        let postDto = parsePostDto(element)
+        postDto.owner.name = owner?.fullname || ""
+        postDto.owner.phone = owner?.phone || ""
+        postDto.postType.name = postType?.name || ""
+        postDto.postType.title_color = postType?.title_color || ""
+        postDto.estateType = estateType?.name || ""
+        postDto.priceType = priceUnit?.label || ""
+
+        dataDtos.push(postDto)
+      }
+
+      if (docs) {
+        return dataDtos
+      } else {
+        throw new Error("Cannot get post list")
+      }
+    } catch (error) {
+      console.log(error)
+      throw new Error("Unable to get post list")
+    }
+  }
+
+  public async getAllPostOfUser(userId: string): Promise<any> {
+    try {
+      let docs = await this.post.find({ownerId: userId})
 
       var dataDtos: postDtoInterface[] = []
 

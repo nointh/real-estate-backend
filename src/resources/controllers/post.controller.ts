@@ -18,6 +18,7 @@ class PostController implements Controller {
     this.router.post(`${this.path}/delete`, this.delete)
     this.router.get(`${this.path}/slug`, this.getSlug)
   }
+
   private create = async (
     req: Request,
     res: Response,
@@ -39,6 +40,7 @@ class PostController implements Controller {
         legalDocuments,
         publishedDate,
         expiredDate,
+        reviewExpireDate,
         price,
         priceType,
         area,
@@ -52,6 +54,7 @@ class PostController implements Controller {
         roadWidth,
         facade,
         slug,
+        declineReasonId,
         belongToProject,
       } = req.body
       const token = await this.PostService.create(
@@ -69,8 +72,8 @@ class PostController implements Controller {
         legalDocuments,
         publishedDate,
         expiredDate,
-        expiredDate,
-        expiredDate,
+        reviewExpireDate,
+        reviewExpireDate,
         price,
         priceType,
         area,
@@ -84,6 +87,7 @@ class PostController implements Controller {
         roadWidth,
         facade,
         slug,
+        declineReasonId,
         belongToProject
       )
       res.status(201).json({ token })
@@ -91,6 +95,7 @@ class PostController implements Controller {
       next(new HttpException(400, error.message))
     }
   }
+
   private get = async (
     req: Request,
     res: Response,
@@ -102,7 +107,7 @@ class PostController implements Controller {
       let postType = req.query.pt?.toString()
       let estateType = req.query.et?.toString()
       let ownerId = req.query.oid?.toString()
-
+      let userId = req.query.usr?.toString()
 
       let data = undefined
 
@@ -111,16 +116,19 @@ class PostController implements Controller {
       if (estateType == undefined) estateType = ""
       if (ownerId == undefined) ownerId = ""
 
-
       if (postId != undefined) {
         data = await this.PostService.getDetail(postId)
       } else {
-        data = await this.PostService.getWithParams(
-          status,
-          postType,
-          estateType,
-          ownerId,
-        )
+        if (userId != undefined) {
+          data = await this.PostService.getAllPostOfUser(userId)
+        } else {
+          data = await this.PostService.getWithParams(
+            status,
+            postType,
+            estateType,
+            ownerId,
+          )
+        }
       }
 
       res.status(200).json({ data })
@@ -151,6 +159,7 @@ class PostController implements Controller {
             next(new HttpException(400, error.message))
         }
   }
+
   private delete = async (
     req: Request,
     res: Response,

@@ -15,6 +15,7 @@ import EstateTypeController from './resources/controllers/estateType.controller'
 import PostTypeController from './resources/controllers/postType.controller'
 import PriceUnitController from './resources/controllers/priceUnit.controller'
 import ImageUploaderController from './resources/controllers/imageUploader.controller'
+import DeclineReasonController from './resources/controllers/declineReason.controller'
 validateEnv()
 
 const app = new App(
@@ -30,6 +31,7 @@ const app = new App(
     new PostTypeController(),
     new PriceUnitController(),
     new ImageUploaderController(),
+    new DeclineReasonController()
   ],
   Number(process.env.PORT)
 )
