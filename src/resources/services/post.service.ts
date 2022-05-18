@@ -211,8 +211,7 @@ class PostService {
         ownerId: {
           $regex: new RegExp(ownerId, "i"),
         },
-        reviewExpireDate: 1
-      })
+      }).sort({reviewExpireDate: 1})
 
       var dataDtos: postDtoInterface[] = []
 
