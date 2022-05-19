@@ -45,6 +45,9 @@ const UserSchema = new Schema<IUser>(
         },
         streetId: {
             type: String    
+        },
+        accountStatus:{
+            type: String
         }
     },
     {

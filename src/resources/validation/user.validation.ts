@@ -44,4 +44,4 @@ const update = Joi.object({
     address: Joi.string(),
 
 })
-export default {register, login}
+export default {register, login, _delete, changePassword, update}

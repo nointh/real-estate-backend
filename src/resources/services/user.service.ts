@@ -60,7 +60,7 @@ class UserService {
       throw new Error(`Unable to log in - Error: ${error}`)
     }
   }
-  public async delete(username: string): Promise<any | Error> {
+  public async deleteByUsername(username: string): Promise<any | Error> {
     try {
       let user = await this.user.findOne({ username })
       if (!user) {
@@ -101,7 +101,8 @@ class UserService {
         }
     }
     public async update(
-        id: string,
+        findBy: string,
+        key: string,
         fullname?: string,
         dateOfBirth?: string,
         phone?: string,
@@ -110,32 +111,62 @@ class UserService {
         districtId?: string,
         wardId?: string,
         streetId?: string,
-        ): Promise<boolean | Error>{
+        accountStatus?: string
+        ): Promise<IUser| any | Error>{
         try {
-            const user = await this.user.findById(id)
-            if (!user){
-                throw new Error("Not a valid user")
+            if ( findBy != 'id' && findBy != 'username')
+            {
+                throw new Error("Not identify username or id")
             }
-            if (fullname)
-                user.fullname = fullname
-            if (dateOfBirth)
-                user.dateOfBirth = dateOfBirth                
-            if (phone)
-                user.phone = phone
-            if (email)
-                user.email = email
-            if (cityId)
-                user.cityId = cityId
+            const updateObject = {
+                fullname: fullname,
+                dateOfBirth: dateOfBirth,
+                phone: phone,
+                email: email,
+                cityId: cityId,
+                districtId: districtId,
+                wardId: wardId,
+                streetId: streetId,
+                accountStatus: accountStatus
+            }
+            if ( findBy = 'username')
+            {
+                const updatedUser = userModel.findOneAndUpdate({ username: key}, updateObject, {
+                    new: true,
+                    omitUndefined: true
+                })
+                return updatedUser
+            }
+            else {
+                const updatedUser = userModel.findByIdAndUpdate( key, updateObject, {
+                    new: true,
+                    omitUndefined: true
+                })
+                return updatedUser
+            }
+            // const user = await this.user.findById(id)
+            // if (!user){
+            //     throw new Error("Not a valid user")
+            // }
+            // if (fullname)
+            //     user.fullname = fullname
+            // if (dateOfBirth)
+            //     user.dateOfBirth = dateOfBirth                
+            // if (phone)
+            //     user.phone = phone
+            // if (email)
+            //     user.email = email
+            // if (cityId)
+            //     user.cityId = cityId
  
-            if (districtId)
-                user.districtId = districtId
+            // if (districtId)
+            //     user.districtId = districtId
 
-            if (wardId)
-                user.wardId = wardId                
-            if (streetId)
-                user.streetId = streetId
-            user.save()
-            return true
+            // if (wardId)
+            //     user.wardId = wardId                
+            // if (streetId)
+            //     user.streetId = streetId
+            // user.save()
         } catch (error: any) {
             throw new Error (`Unable to update user information - Error: ${error}`)
         }
@@ -163,7 +194,7 @@ class UserService {
     }
     public async getUserByUsername(username: string){
         try {
-            const user = await this.user.findOne()
+            const user = await this.user.findOne({ username: username})
             if (!user)
             {
                 throw new Error(`Username ${username} is not existed`)
@@ -173,7 +204,7 @@ class UserService {
             throw new Error (`Unable to get user by username - Error: ${error}`)
         }
     }
-    public async deleteUser(id: string){
+    public async deleteUserById(id: string){
         try {
             const user = await this.user.findByIdAndDelete(id)
             if (!user)

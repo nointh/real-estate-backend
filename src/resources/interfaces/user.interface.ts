@@ -12,6 +12,6 @@ export default interface IUser extends Document {
     districtId?: string,
     wardId?: string,
     streetId?: string,
-
+    accountStatus: string
     isValidPassword(password: string): Promise<Error|Boolean>;
 }
