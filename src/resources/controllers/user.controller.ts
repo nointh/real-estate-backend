@@ -41,15 +41,15 @@ class UserController implements Controller{
             this.changePassword
         )
         this.router.get(
-            `${this.path}/user`,
+            `${this.path}`,
             this.getUser
         ),
         this.router.delete(
-            `${this.path}/user`,
+            `${this.path}`,
             this.delete
         ),
         this.router.put(
-            `${this.path}/user`,
+            `${this.path}`,
             this.update
         )
     }
@@ -109,7 +109,7 @@ class UserController implements Controller{
         next: NextFunction
     ) : Promise<Response | void> => {
         try {
-            const { id, username } = req.params
+            const { id, username } = req.query
             if (!id && !username){
                 const users = await this.UserService.getAllUsers()
                 res.status(200).json({ users: users})
@@ -117,12 +117,12 @@ class UserController implements Controller{
             else{
                 if (id && !username)
                 {
-                    const user = await this.UserService.getUserById(id)
+                    const user = await this.UserService.getUserById(id.toString())
                     res.status(200).json({ user: user})
                 }
                 else if (!id && username)
                 {
-                    const user = await this.UserService.getUserByUsername(username)
+                    const user = await this.UserService.getUserByUsername(username.toString())
                     res.status(200).json({ user: user})
                 }
             }
