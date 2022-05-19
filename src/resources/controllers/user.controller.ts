@@ -26,9 +26,31 @@ class UserController implements Controller{
             this.login
         )
         this.router.get(
-            `${this.path}`,
+            `${this.path}/currentUser`,
             authenticated,
+            this.getCurrentUser
+        ),
+        this.router.put(
+            `${this.path}/currentUser`,
+            authenticated,
+            this.updateCurrentUser
+        )
+        this.router.post(
+            `${this.path}/changePassword`,
+            authenticated,
+            this.changePassword
+        )
+        this.router.get(
+            `${this.path}`,
             this.getUser
+        ),
+        this.router.delete(
+            `${this.path}`,
+            this.delete
+        ),
+        this.router.put(
+            `${this.path}`,
+            this.update
         )
     }
     private register = async (
@@ -67,7 +89,7 @@ class UserController implements Controller{
             next(new HttpException(400, error.message))
         }
     }
-    private getUser = async (
+    private getCurrentUser = async (
         req: Request,
         res: Response,
         next: NextFunction
@@ -77,6 +99,109 @@ class UserController implements Controller{
                 return next(new HttpException(401,"Unauthorized"))
             }
             res.status(200).json({ user: req.user })
+        } catch( error:any ){
+            next(new HttpException(400, error.message))
+        }
+    }
+    private getUser = async (
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ) : Promise<Response | void> => {
+        try {
+            const { id, username } = req.query
+            if (!id && !username){
+                const users = await this.UserService.getAllUsers()
+                res.status(200).json({ users: users})
+            }
+            else{
+                if (id && !username)
+                {
+                    const user = await this.UserService.getUserById(id.toString())
+                    res.status(200).json({ user: user})
+                }
+                else if (!id && username)
+                {
+                    const user = await this.UserService.getUserByUsername(username.toString())
+                    res.status(200).json({ user: user})
+                }
+            }
+        } catch( error:any ){
+            next(new HttpException(400, error.message))
+        }
+    }
+    private changePassword = async (
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ) : Promise<Response | void> => {
+        try {
+            const { oldPassword, newPassword} = req.body
+            if (! req.user){
+                return next(new HttpException(401,"Unauthorized"))
+            }
+            if (await this.UserService.changePassword(req.user._id, oldPassword, newPassword)){
+                res.status(200).json({ message: "Change password successfully" })
+            }
+            else{
+                next(new HttpException(401,"Cannot change password"))
+            }
+        } catch( error:any ){
+            next(new HttpException(400, error.message))
+        }
+    }
+    private updateCurrentUser = async (
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ) : Promise<Response | void> => {
+        try {
+            const { fullname, dateOfBirth, phone, email, cityId, districtId, wardId, streetId } = req.body      
+            if (! req.user){
+                return next(new HttpException(401,"Unauthorized"))
+            }
+            if (await this.UserService.update(req.user._id, fullname, dateOfBirth, phone, email, cityId, districtId, wardId, streetId)){
+                res.status(200).json({ message: "Update user successfully" })
+            }
+            else{
+                next(new HttpException(401,"Cannot update user"))
+            }
+        } catch( error:any ){
+            next(new HttpException(400, error.message))
+        }
+    }
+    private delete = async (
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ) : Promise<Response | void> => {
+        try {
+            const { id } = req.params
+            const user = await this.UserService.deleteUser(id)
+            if (user){
+                res.status(200).json({ message: "Delete user successfully", user: user })
+            }
+            else{
+                next(new HttpException(401,"Cannot delete user"))
+            }
+        } catch( error:any ){
+            next(new HttpException(400, error.message))
+        }
+    }
+    private update = async (
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ) : Promise<Response | void> => {
+        try {
+            const { fullname, dateOfBirth, phone, email, cityId, districtId, wardId, streetId } = req.body      
+            const { id } = req.params
+            if (await this.UserService.update(id, fullname, dateOfBirth, phone, email, cityId, districtId, wardId, streetId)){
+                res.status(200).json({ message: "Update user successfully" })
+            }
+            else{
+                next(new HttpException(401,"Cannot update user"))
+            }
         } catch( error:any ){
             next(new HttpException(400, error.message))
         }

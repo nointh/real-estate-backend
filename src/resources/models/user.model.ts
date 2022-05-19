@@ -11,23 +11,41 @@ const UserSchema = new Schema<IUser>(
             required: true
         },
         password: {
-            type: String
+            type: String,
+            required: true
         },
         email: {
             type: String,
             unique: true,
-            trim: true
+            trim: true,
+            required: true
         },
         phone: {
-            type: String
+            type: String,
+            unique: true,
+            trim: true,
+            required: true
         },
         fullname: {
-            type: String
+            type: String,
+            required: true
         },
         dateOfBirth: {
+            type: String,
+            required: true
+        },
+        cityId :{
             type: String
+        },
+        districtId: {
+            type: String
+        },
+        wardId: {
+            type: String    
+        },
+        streetId: {
+            type: String    
         }
-
     },
     {
         timestamps: true
