@@ -17,6 +17,8 @@ import PostTypeController from './resources/controllers/postType.controller'
 import PriceUnitController from './resources/controllers/priceUnit.controller'
 import ImageUploaderController from './resources/controllers/imageUploader.controller'
 import DeclineReasonController from './resources/controllers/declineReason.controller'
+import ProjectTypeController from './resources/controllers/projectType.controller'
+import ProjectController from './resources/controllers/project.controller'
 validateEnv()
 
 const app = new App(
@@ -33,7 +35,9 @@ const app = new App(
     new PriceUnitController(),
     new ImageUploaderController(),
     new DeclineReasonController(),
-    new AdminUserController()
+    new AdminUserController(),
+    new ProjectTypeController(),
+    new ProjectController()
   ],
   Number(process.env.PORT)
 )
