@@ -242,7 +242,7 @@ class UserService {
         let result = await user.update({
           $set: {
             accountStatus: {
-              status: "unban",
+              status: "active",
               date: "",
             },
           },
