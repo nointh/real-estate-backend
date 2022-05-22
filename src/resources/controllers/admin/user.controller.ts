@@ -135,11 +135,11 @@ class UserController implements Controller {
     next: NextFunction
   ): Promise<Response | void> => {
     try {
-      let userId = req.body._id?.toString()
+      let username = req.body._id?.toString()
       let period = req.body.period?.toString()
 
       if (userId && period) {
-        const result = await this.UserService.ban(userId, period)
+        const result = await this.UserService.ban(username, period)
         res.status(201).json({ result })
       } else {
         throw new Error("ID and date must be defined")
@@ -154,10 +154,10 @@ class UserController implements Controller {
     next: NextFunction
   ): Promise<Response | void> => {
     try {
-      let userId = req.body._id?.toString()
+      let username = req.body._id?.toString()
 
       if (userId) {
-        const result = await this.UserService.unban(userId)
+        const result = await this.UserService.unban(username)
         res.status(201).json({ result })
       } else {
         throw new Error("ID must be defined")

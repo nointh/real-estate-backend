@@ -215,7 +215,7 @@ class UserService {
   }
   public async ban(id: string, period: string) {
     try {
-      let user = await this.user.findById(id)
+      let user = await this.user.findOne({username: id})
 
       if (user) {
         let result = await user.update({
@@ -236,7 +236,7 @@ class UserService {
   }
   public async unban(id: string) {
     try {
-      let user = await this.user.findById(id)
+      let user = await this.user.findOne({username: id})
 
       if (user) {
         let result = await user.update({
