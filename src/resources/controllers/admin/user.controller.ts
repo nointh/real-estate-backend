@@ -138,11 +138,11 @@ class UserController implements Controller {
       let username = req.body._id?.toString()
       let period = req.body.period?.toString()
 
-      if (userId && period) {
+      if (username && period) {
         const result = await this.UserService.ban(username, period)
         res.status(201).json({ result })
       } else {
-        throw new Error("ID and date must be defined")
+        throw new Error("Username and date must be defined")
       }
     } catch (error: any) {
       next(new HttpException(400, error.message))
@@ -156,11 +156,11 @@ class UserController implements Controller {
     try {
       let username = req.body._id?.toString()
 
-      if (userId) {
+      if (username) {
         const result = await this.UserService.unban(username)
         res.status(201).json({ result })
       } else {
-        throw new Error("ID must be defined")
+        throw new Error("Username must be defined")
       }
     } catch (error: any) {
       next(new HttpException(400, error.message))
