@@ -28,11 +28,11 @@ class NewsController implements Controller {
     next: NextFunction
   ): Promise<Response | void> => {
     try {
-        const postId=req.query.p?.toString()
+        const newsId=req.query.p?.toString()
         let data=undefined
-        if(postId!=undefined)
+        if(newsId!=undefined)
         {
-            data = await this.NewsService.getByID(postId)
+            data = await this.NewsService.getByID(newsId)
         }
         else data=await this.NewsService.get()
       res.status(201).json({ data })
