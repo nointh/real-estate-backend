@@ -17,7 +17,10 @@ export default interface PostDto{
         name: string,
         title_color: string
     },
-    estateType: string,
+    estateType: {
+        name: string,
+        slug: string
+    },
     forSaleOrRent: string,
     location: {
         CityName: string,
@@ -77,7 +80,10 @@ export const parsePostDto = (post: any) : PostDto =>{
             name: post.postTypeId,
             title_color: post.postTypeId
         },
-        estateType: post.estateTypeId,
+        estateType: {
+            name: post.estateTypeId,
+            slug: post.estateTypeId
+        },
         forSaleOrRent: post.forSaleOrRent,
         location: {
             CityName: post.location.CityName,

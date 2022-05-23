@@ -125,7 +125,8 @@ class PostService {
       postDto.owner.phone = owner?.phone || ""
       postDto.postType.name = postType?.name || ""
       postDto.postType.title_color = postType?.title_color || ""
-      postDto.estateType = estateType?.name || ""
+      postDto.estateType.name = estateType?.name || ""
+      postDto.estateType.slug = estateType?.slug || ""
       postDto.priceType = priceUnit?.label || ""
 
       if (post) {
@@ -153,7 +154,8 @@ class PostService {
       postDto.owner.phone = owner?.phone || ""
       postDto.postType.name = postType?.name || ""
       postDto.postType.title_color = postType?.title_color || ""
-      postDto.estateType = estateType?.name || ""
+      postDto.estateType.name = estateType?.name || ""
+      postDto.estateType.slug = estateType?.slug || ""
       postDto.priceType = priceUnit?.label || ""
 
       if (post) {
@@ -228,7 +230,8 @@ class PostService {
         postDto.owner.phone = owner?.phone || ""
         postDto.postType.name = postType?.name || ""
         postDto.postType.title_color = postType?.title_color || ""
-        postDto.estateType = estateType?.name || ""
+        postDto.estateType.name = estateType?.name || ""
+        postDto.estateType.slug = estateType?.slug || ""
         postDto.priceType = priceUnit?.label || ""
 
         dataDtos.push(postDto)
@@ -264,7 +267,8 @@ class PostService {
         postDto.owner.phone = owner?.phone || ""
         postDto.postType.name = postType?.name || ""
         postDto.postType.title_color = postType?.title_color || ""
-        postDto.estateType = estateType?.name || ""
+        postDto.estateType.name = estateType?.name || ""
+        postDto.estateType.slug = estateType?.slug || ""
         postDto.priceType = priceUnit?.label || ""
 
         dataDtos.push(postDto)
