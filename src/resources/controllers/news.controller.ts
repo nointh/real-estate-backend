@@ -14,7 +14,7 @@ class NewsController implements Controller {
   constructor() {
     this.initialiseRoutes()
   }
-  
+
   private initialiseRoutes() {
     this.router.get(
       `${this.path}/get`,
@@ -28,13 +28,11 @@ class NewsController implements Controller {
     next: NextFunction
   ): Promise<Response | void> => {
     try {
-        const newsId=req.query.p?.toString()
-        let data=undefined
-        if(newsId!=undefined)
-        {
-            data = await this.NewsService.getByID(newsId)
-        }
-        else data=await this.NewsService.get()
+      const newsId = req.query.p?.toString()
+      let data = undefined
+      if (newsId != undefined) {
+        data = await this.NewsService.getByID(newsId)
+      } else data = await this.NewsService.get()
       res.status(201).json({ data })
     } catch (error: any) {
       next(new HttpException(400, error.message))
