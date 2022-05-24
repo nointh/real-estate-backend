@@ -10,6 +10,7 @@ export default interface News extends Document {
   type: string
   views: number
   thumail: string
+  slug: string
 }
 
 interface NewsDetails extends Document {

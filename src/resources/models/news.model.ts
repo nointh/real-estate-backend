@@ -53,6 +53,12 @@ const NewsSchema = new Schema(
     views: {
       type: Number,
     },
+    slug: {
+      type: String,
+    },
+    thumnail: {
+      type: String,
+    },
   },
   {
     timestamps: true,

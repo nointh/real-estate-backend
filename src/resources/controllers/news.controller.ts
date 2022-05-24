@@ -18,16 +18,8 @@ class NewsController implements Controller {
   }
 
   private initialiseRoutes() {
-    this.router.get(
-      `${this.path}/get`,
-      //validationMiddleware(validate.approve),
-      this.get
-    )
-    this.router.get(
-      `${this.path}/slug`,
-      //validationMiddleware(validate.approve),
-      this.getSlug
-    )
+    this.router.get(`${this.path}/get`, this.get)
+    this.router.get(`${this.path}/slug`, this.getSlug)
   }
   private get = async (
     req: Request,
@@ -36,9 +28,12 @@ class NewsController implements Controller {
   ): Promise<Response | void> => {
     try {
       const newsId = req.query.p?.toString()
+      const slug = req.query.slug?.toString()
       let data = undefined
       if (newsId != undefined) {
         data = await this.NewsService.getByID(newsId)
+      } else if (slug != undefined) {
+        data = await this.NewsService.getBySlug(slug)
       } else data = await this.NewsService.get()
       res.status(201).json({ data })
     } catch (error: any) {
@@ -53,7 +48,7 @@ class NewsController implements Controller {
   ): Promise<Response | void> => {
     try {
       let data = undefined
-      data = await this.NewsTypeService.getAllSlug()
+      data = await this.NewsService.getAllNewsSlugs()
 
       res.status(201).json({ data })
     } catch (error: any) {
