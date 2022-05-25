@@ -30,6 +30,7 @@ class NewsService {
   public async getBySlug(slug: string): Promise<News | any> {
     try {
       const news = await this.news.findOne({ slug: slug })
+
       return news
     } catch (error) {
       throw new Error("Unable to get news")
@@ -43,11 +44,7 @@ class NewsService {
       const result = await Promise.all(
         filterNews.map(async (element) => {
           let postSlug = element?.slug
-          let type = await this.newsType.findOne({ id: element?.type })
-          let typeSlug = ""
-          if (type) {
-            typeSlug = type?.slug
-          }
+          let typeSlug = element?.type
           return {
             params: { newsTypeSlug: typeSlug, newSlug: postSlug },
           }

@@ -18,6 +18,7 @@ class NewsController implements Controller {
   }
 
   private initialiseRoutes() {
+    
     this.router.get(`${this.path}/get`, this.get)
     this.router.get(`${this.path}/slug`, this.getSlug)
   }
