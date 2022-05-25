@@ -18,11 +18,9 @@ class NewsController implements Controller {
   }
 
   private initialiseRoutes() {
-    
     this.router.get(`${this.path}/get`, this.get)
     this.router.get(`${this.path}/slug`, this.getSlug)
     this.router.get(`${this.path}/type`, this.getType)
-
   }
   private get = async (
     req: Request,
@@ -32,11 +30,14 @@ class NewsController implements Controller {
     try {
       const newsId = req.query.p?.toString()
       const slug = req.query.slug?.toString()
+      const typeSlug = req.query.typeslug?.toString()
       let data = undefined
       if (newsId != undefined) {
         data = await this.NewsService.getByID(newsId)
       } else if (slug != undefined) {
         data = await this.NewsService.getBySlug(slug)
+      } else if (typeSlug != undefined) {
+        data = await this.NewsService.getByTypeSlug(typeSlug)
       } else data = await this.NewsService.get()
       res.status(201).json({ data })
     } catch (error: any) {

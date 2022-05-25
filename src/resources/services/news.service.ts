@@ -37,6 +37,17 @@ class NewsService {
     }
   }
 
+  public async getByTypeSlug(typeslug: string): Promise<News | any> {
+    try {
+      console.log(typeslug)
+      const news = await this.news.find({ type: typeslug })
+
+      return news
+    } catch (error) {
+      throw new Error("Unable to get news")
+    }
+  }
+
   public async getAllNewsSlugs(): Promise<any> {
     try {
       let news = await this.news.find()
