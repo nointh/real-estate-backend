@@ -21,6 +21,8 @@ class NewsController implements Controller {
     
     this.router.get(`${this.path}/get`, this.get)
     this.router.get(`${this.path}/slug`, this.getSlug)
+    this.router.get(`${this.path}/type`, this.getType)
+
   }
   private get = async (
     req: Request,
@@ -50,6 +52,21 @@ class NewsController implements Controller {
     try {
       let data = undefined
       data = await this.NewsService.getAllNewsSlugs()
+
+      res.status(201).json({ data })
+    } catch (error: any) {
+      next(new HttpException(400, error.message))
+    }
+  }
+
+  private getType = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<Response | void> => {
+    try {
+      let data = undefined
+      data = await this.NewsTypeService.get()
 
       res.status(201).json({ data })
     } catch (error: any) {
