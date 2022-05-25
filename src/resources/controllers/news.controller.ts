@@ -19,6 +19,7 @@ class NewsController implements Controller {
 
   private initialiseRoutes() {
     this.router.get(`${this.path}/get`, this.get)
+    this.router.get(`${this.path}/popular`, this.getPopular)
     this.router.get(`${this.path}/slug`, this.getSlug)
     this.router.get(`${this.path}/type`, this.getType)
   }
@@ -31,6 +32,8 @@ class NewsController implements Controller {
       const newsId = req.query.p?.toString()
       const slug = req.query.slug?.toString()
       const typeSlug = req.query.typeslug?.toString()
+      const tag = req.query.tag?.toString()
+
       let data = undefined
       if (newsId != undefined) {
         data = await this.NewsService.getByID(newsId)
@@ -38,6 +41,8 @@ class NewsController implements Controller {
         data = await this.NewsService.getBySlug(slug)
       } else if (typeSlug != undefined) {
         data = await this.NewsService.getByTypeSlug(typeSlug)
+      } else if (tag != undefined) {
+        data = await this.NewsService.getByTag(tag)
       } else data = await this.NewsService.get()
       res.status(201).json({ data })
     } catch (error: any) {
@@ -66,8 +71,30 @@ class NewsController implements Controller {
     next: NextFunction
   ): Promise<Response | void> => {
     try {
+      let slug = req.query.slug?.toString()
+
       let data = undefined
-      data = await this.NewsTypeService.get()
+      if (slug) {
+        data = await this.NewsTypeService.getBySlug(slug)
+      } else {
+        data = await this.NewsTypeService.get()
+      }
+
+      res.status(201).json({ data })
+    } catch (error: any) {
+      next(new HttpException(400, error.message))
+    }
+  }
+
+  private getPopular = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<Response | void> => {
+    try {
+      let data = undefined
+
+      data = await this.NewsService.getPopular()
 
       res.status(201).json({ data })
     } catch (error: any) {

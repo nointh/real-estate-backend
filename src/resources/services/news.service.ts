@@ -67,5 +67,31 @@ class NewsService {
       throw new Error(`Unable to get post slug due to error: ${error}`)
     }
   }
+
+  public async getByTag(tag: string): Promise<any> {
+    try {
+      const type = await this.news
+        .find({
+          tags: {
+            $regex: new RegExp(tag, "i"),
+          },
+        })
+        .exec()
+
+      return type
+    } catch (error) {
+      throw new Error("Unable to get news types")
+    }
+  }
+
+  public async getPopular(): Promise<any> {
+    try {
+      const type = await this.news.find().sort({ view: 1 })
+
+      return type
+    } catch (error) {
+      throw new Error("Unable to get news types")
+    }
+  }
 }
 export default NewsService
