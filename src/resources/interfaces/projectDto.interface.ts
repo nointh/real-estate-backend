@@ -8,7 +8,10 @@ export default interface ProjectDto{
         name: string,
         title_color: string,
     },
-    projectType: string,
+    projectType: {
+        name: string,
+        slug: string
+    },
     investor: {
         name: string,
         phone: string,
@@ -62,7 +65,10 @@ export const parseProjectDto = (project: any) : ProjectDto =>{
             name: project.name,
             title_color: project.name,
         },
-        projectType: project.projectTypeId,
+        projectType: {
+            name: project.projectTypeId,
+            slug: project.projectTypeId
+        },
         investor: {
             name: project.name,
             phone: project.name,

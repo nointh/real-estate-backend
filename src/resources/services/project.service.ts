@@ -112,7 +112,8 @@ class ProjectService {
       postDto.investor.phone = owner?.phone || ""
       postDto.postType.name = postType?.name || ""
       postDto.postType.title_color = postType?.title_color || ""
-      postDto.projectType = projectType?.name || ""
+      postDto.projectType.name = projectType?.name || ""
+      postDto.projectType.slug = projectType?.slug || ""
 
       if (post) {
         return postDto
@@ -161,7 +162,8 @@ class ProjectService {
         postDto.investor.phone = owner?.phone || ""
         postDto.postType.name = postType?.name || ""
         postDto.postType.title_color = postType?.title_color || ""
-        postDto.projectType = projectType?.name || ""
+        postDto.projectType.name = projectType?.name || ""
+        postDto.projectType.slug = projectType?.slug || ""
 
         dataDtos.push(postDto)
       }
