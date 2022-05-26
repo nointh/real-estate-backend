@@ -60,7 +60,7 @@ const NewsSchema = new Schema(
       slug: "slug",
       unique: true,
     },
-    thumnail: {
+    thumbnail: {
       type: String,
     },
   },
