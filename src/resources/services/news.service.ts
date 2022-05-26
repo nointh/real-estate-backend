@@ -8,9 +8,9 @@ class NewsService {
   private news = NewsModel
   private newsType = NewsTypesModel
 
-  public async get(): Promise<Array<News> | any> {
+  public async get(limit: number): Promise<Array<News> | any> {
     try {
-      const news = await this.news.find()
+      const news = await this.news.find().sort({ submitday: 1 }).limit(limit)
       if (news.length > 0) return news
       else return null
     } catch (error) {
@@ -37,10 +37,15 @@ class NewsService {
     }
   }
 
-  public async getByTypeSlug(typeslug: string): Promise<News | any> {
+  public async getByTypeSlug(
+    typeslug: string,
+    limit: number
+  ): Promise<News | any> {
     try {
-      console.log(typeslug)
-      const news = await this.news.find({ type: typeslug })
+      const news = await this.news
+        .find({ type: typeslug })
+        .sort({ submitday: 1 })
+        .limit(limit)
 
       return news
     } catch (error) {
@@ -76,7 +81,7 @@ class NewsService {
             $regex: new RegExp(tag, "i"),
           },
         })
-        .exec()
+        .sort({ submitday: 1 })
 
       return type
     } catch (error) {
@@ -84,9 +89,9 @@ class NewsService {
     }
   }
 
-  public async getPopular(): Promise<any> {
+  public async getPopular(limit: number): Promise<any> {
     try {
-      const type = await this.news.find().sort({ view: 1 })
+      const type = await this.news.find().sort({ view: 1 }).limit(limit)
 
       return type
     } catch (error) {

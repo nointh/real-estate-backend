@@ -33,6 +33,13 @@ class NewsController implements Controller {
       const slug = req.query.slug?.toString()
       const typeSlug = req.query.typeslug?.toString()
       const tag = req.query.tag?.toString()
+      let limit = req.query.limit?.toString()
+
+      let limit_n = 1000
+
+      if (limit) {
+        limit_n = parseInt(limit)
+      }
 
       let data = undefined
       if (newsId != undefined) {
@@ -40,10 +47,10 @@ class NewsController implements Controller {
       } else if (slug != undefined) {
         data = await this.NewsService.getBySlug(slug)
       } else if (typeSlug != undefined) {
-        data = await this.NewsService.getByTypeSlug(typeSlug)
+        data = await this.NewsService.getByTypeSlug(typeSlug, limit_n)
       } else if (tag != undefined) {
         data = await this.NewsService.getByTag(tag)
-      } else data = await this.NewsService.get()
+      } else data = await this.NewsService.get(limit_n)
       res.status(201).json({ data })
     } catch (error: any) {
       next(new HttpException(400, error.message))
@@ -92,9 +99,15 @@ class NewsController implements Controller {
     next: NextFunction
   ): Promise<Response | void> => {
     try {
+      let limit = req.query.limit?.toString()
+      let limit_n = 100
       let data = undefined
 
-      data = await this.NewsService.getPopular()
+      if (limit) {
+        limit_n = parseInt(limit)
+      }
+
+      data = await this.NewsService.getPopular(limit_n)
 
       res.status(201).json({ data })
     } catch (error: any) {
