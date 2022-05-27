@@ -37,7 +37,7 @@ export default interface PostDto{
         Lng: number
     },
     belongToProject: {
-        projectId: number,
+        projectId: string,
         projectName: null
     },
     description: string,
