@@ -54,4 +54,5 @@ export default interface IPost extends Document{
     facade: number,
     slug: string,
     declineReasonId: string,
+    views: number
 }

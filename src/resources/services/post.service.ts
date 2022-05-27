@@ -65,7 +65,8 @@ class PostService {
     belongToProject: {
       projectId: number
       projectName: string
-    }
+    },
+    views: number
   ): Promise<string | Error> {
     try {
       const post = await this.post.create({
@@ -100,6 +101,7 @@ class PostService {
         slug,
         declineReasonId,
         belongToProject,
+        views,
       })
 
       if (post) {
@@ -200,20 +202,22 @@ class PostService {
     ownerId: string
   ): Promise<any> {
     try {
-      let docs = await this.post.find({
-        status: {
-          $regex: new RegExp(status, "i"),
-        },
-        postTypeId: {
-          $regex: new RegExp(postType, "i"),
-        },
-        estateTypeId: {
-          $regex: new RegExp(estateType, "i"),
-        },
-        ownerId: {
-          $regex: new RegExp(ownerId, "i"),
-        },
-      }).sort({reviewExpireDate: 1})
+      let docs = await this.post
+        .find({
+          status: {
+            $regex: new RegExp(status, "i"),
+          },
+          postTypeId: {
+            $regex: new RegExp(postType, "i"),
+          },
+          estateTypeId: {
+            $regex: new RegExp(estateType, "i"),
+          },
+          ownerId: {
+            $regex: new RegExp(ownerId, "i"),
+          },
+        })
+        .sort({ reviewExpireDate: 1 })
 
       var dataDtos: postDtoInterface[] = []
 
@@ -250,7 +254,7 @@ class PostService {
 
   public async getAllPostOfUser(userId: string): Promise<any> {
     try {
-      let docs = await this.post.find({ownerId: userId})
+      let docs = await this.post.find({ ownerId: userId })
 
       var dataDtos: postDtoInterface[] = []
 
@@ -287,7 +291,9 @@ class PostService {
 
   public async getTotalPostOfCity(cityId: string): Promise<any> {
     try {
-      let res = await this.post.where({'location.CityCode': `${cityId}`}).count()
+      let res = await this.post
+        .where({ "location.CityCode": `${cityId}` })
+        .count()
 
       if (res) {
         return res
@@ -302,7 +308,7 @@ class PostService {
 
   public async getTotalPostOfUser(userId: string): Promise<any> {
     try {
-      let res = await this.post.where({'ownerId': `${userId}`}).count()
+      let res = await this.post.where({ ownerId: `${userId}` }).count()
 
       if (res) {
         return res
@@ -404,6 +410,33 @@ class PostService {
       }
     } catch (error) {
       throw new Error("Unable to count post")
+    }
+  }
+
+  public async view(id: string): Promise<any> {
+    try {
+      console.log(id)
+
+      let post = await this.post.findOne({ id: id })
+
+      if (post) {
+        let v = post?.views
+        v += 1
+        console.log(v)
+        let result = await this.post.updateOne(
+          { id: id },
+          {
+            $set: {
+              views: v,
+            },
+          }
+        )
+
+        return result
+      }
+    } catch (error) {
+      console.log(error)
+      throw new Error("Unable to get post count")
     }
   }
 }

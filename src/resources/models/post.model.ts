@@ -162,6 +162,9 @@ const PostSchema = new Schema(
         },
         declineReasonId: {
             type: String,
+        },
+        views: {
+            type: Number,
         }
     },
     {

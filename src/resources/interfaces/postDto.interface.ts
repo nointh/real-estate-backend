@@ -61,6 +61,7 @@ export default interface PostDto{
     facade: number,
     slug: string,
     declineReasonId: string,
+    views: number,
 }
 
 export const parsePostDto = (post: any) : PostDto =>{
@@ -123,6 +124,7 @@ export const parsePostDto = (post: any) : PostDto =>{
         roadWidth: post.roadWidth,
         facade: post.facade,
         slug: post.slug,
-        declineReasonId: post.declineReasonId
+        declineReasonId: post.declineReasonId,
+        views: post.views
     }
 }

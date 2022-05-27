@@ -22,6 +22,7 @@ class NewsController implements Controller {
     this.router.get(`${this.path}/popular`, this.getPopular)
     this.router.get(`${this.path}/slug`, this.getSlug)
     this.router.get(`${this.path}/type`, this.getType)
+    this.router.post(`${this.path}/view`, this.view)
   }
   private get = async (
     req: Request,
@@ -29,7 +30,6 @@ class NewsController implements Controller {
     next: NextFunction
   ): Promise<Response | void> => {
     try {
-      const newsId = req.query.p?.toString()
       const slug = req.query.slug?.toString()
       const typeSlug = req.query.typeslug?.toString()
       const tag = req.query.tag?.toString()
@@ -42,9 +42,7 @@ class NewsController implements Controller {
       }
 
       let data = undefined
-      if (newsId != undefined) {
-        data = await this.NewsService.getByID(newsId)
-      } else if (slug != undefined) {
+      if (slug != undefined) {
         data = await this.NewsService.getBySlug(slug)
       } else if (typeSlug != undefined) {
         data = await this.NewsService.getByTypeSlug(typeSlug, limit_n)
@@ -108,6 +106,22 @@ class NewsController implements Controller {
       }
 
       data = await this.NewsService.getPopular(limit_n)
+
+      res.status(201).json({ data })
+    } catch (error: any) {
+      next(new HttpException(400, error.message))
+    }
+  }
+
+  private view = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<Response | void> => {
+    try {
+      let { slug } = req.body.slug?.toString()
+
+      const data = await this.NewsService.view(slug)
 
       res.status(201).json({ data })
     } catch (error: any) {

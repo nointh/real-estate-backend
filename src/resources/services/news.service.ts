@@ -18,20 +18,46 @@ class NewsService {
     }
   }
 
-  public async getByID(id: string): Promise<News | any> {
+  public async getBySlug(slug: string): Promise<News | any> {
     try {
-      const news = await this.news.findById("abc")
-      return news
+      let n = await this.news.findOne({ slug: slug })
+      if (n) {
+        let v = n?.views
+        v += 1
+        let result = await this.news.updateOne(
+          { slug: slug },
+          {
+            $set: {
+              views: v,
+            },
+          }
+        )
+      }
+
+      return n
     } catch (error) {
       throw new Error("Unable to get news")
     }
   }
 
-  public async getBySlug(slug: string): Promise<News | any> {
+  public async view(slug: string): Promise<News | any> {
     try {
-      const news = await this.news.findOne({ slug: slug })
+      let n = await this.news.findOne({ slug: slug })
 
-      return news
+      if (n) {
+        let v = n?.views
+        v += 1
+        let result = await this.news.updateOne(
+          { slug: slug },
+          {
+            $set: {
+              views: v,
+            },
+          }
+        )
+
+        return result
+      }
     } catch (error) {
       throw new Error("Unable to get news")
     }
