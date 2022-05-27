@@ -15,6 +15,7 @@ class PostController implements Controller {
   private initialiseRoutes() {
     this.router.post(`${this.path}/upload`, this.create)
     this.router.get(`${this.path}/get`, this.get)
+    this.router.get(`${this.path}/count`, this.count)
     this.router.post(`${this.path}/delete`, this.delete)
     this.router.get(`${this.path}/slug`, this.getSlug)
   }
@@ -170,6 +171,29 @@ class PostController implements Controller {
       const token = await this.PostService.delete(postId)
 
       res.status(200).json({ token })
+    } catch (error: any) {
+      next(new HttpException(400, error.message))
+    }
+  }
+
+  private count = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<Response | void> => {
+    try {
+      let cityCode = req.query.cityCode?.toString()
+      let userId = req.query.userId?.toString()
+      let data = undefined
+
+      if (cityCode == undefined && userId != undefined) {
+        data = await this.PostService.getTotalPostOfUser(userId)
+      }
+      if (cityCode != undefined && userId == undefined) {
+        data = await this.PostService.getTotalPostOfCity(cityCode)
+      }
+
+      res.status(200).json({ data })
     } catch (error: any) {
       next(new HttpException(400, error.message))
     }

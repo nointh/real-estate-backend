@@ -285,6 +285,36 @@ class PostService {
     }
   }
 
+  public async getTotalPostOfCity(cityId: string): Promise<any> {
+    try {
+      let res = await this.post.where({'location.CityCode': `${cityId}`}).count()
+
+      if (res) {
+        return res
+      } else {
+        throw new Error("Cannot get post count")
+      }
+    } catch (error) {
+      console.log(error)
+      throw new Error("Unable to get post count")
+    }
+  }
+
+  public async getTotalPostOfUser(userId: string): Promise<any> {
+    try {
+      let res = await this.post.where({'ownerId': `${userId}`}).count()
+
+      if (res) {
+        return res
+      } else {
+        throw new Error("Cannot get post count")
+      }
+    } catch (error) {
+      console.log(error)
+      throw new Error("Unable to get post count")
+    }
+  }
+
   public async delete(_id: any): Promise<any> {
     try {
       let post = await this.post.findOne({ _id: _id })
