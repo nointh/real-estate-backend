@@ -62,7 +62,7 @@ class TransactionService {
     try {
       let status = "waiting"
       let dateProceed = new Date()
-      let dateFinish = "null"
+      let dateFinish = new Date()
       const trans = await this.transaction.create({
         user,
         status,

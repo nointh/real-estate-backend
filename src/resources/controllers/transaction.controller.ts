@@ -50,9 +50,8 @@ class TransactionController implements Controller {
     next: NextFunction
   ): Promise<Response | void> => {
     try {
-      const { user, amount, detail, type } = req.body
+      const { user, amount, balance, detail, type } = req.body
 
-      const { balance } = await this.userService.getUserById(user)
       let result = await this.transactionService.add(user, amount, balance, detail, type)
 
       res.status(201).json({ result })

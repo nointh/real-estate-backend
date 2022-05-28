@@ -1,10 +1,10 @@
 import PostModel from "@/resources/models/post.model"
-import IPost from "@/resources/interfaces/post.interface"
 import postDtoInterface, { parsePostDto } from "../interfaces/postDto.interface"
 import userModel from "../models/user.model"
 import postTypeModel from "../models/postType.model"
 import estateTypeModel from "../models/estateType.model"
 import priceUnitModel from "../models/priceUnit.model"
+import TransactionService from "./transaction.service"
 
 class PostService {
   private post = PostModel
@@ -12,6 +12,7 @@ class PostService {
   private postType = postTypeModel
   private estateType = estateTypeModel
   private priceUnit = priceUnitModel
+  private transactionService = new TransactionService()
 
   public async create(
     title: string,
@@ -66,7 +67,8 @@ class PostService {
       projectId: string
       projectName: string
     },
-    views: number
+    views: number,
+    payAmount: number
   ): Promise<string | Error> {
     try {
       const post = await this.post.create({
@@ -105,10 +107,18 @@ class PostService {
       })
 
       if (post) {
-        return "Success! PostId = " + post.id.toString()
-      } else {
-        return "Fail to create post"
+        const usr = await this.user.findById(ownerId)
+        const ogBalance = usr?.balance || 0
+        const newBalance = ogBalance - payAmount
+        const detail = "Trừ tiền phí đăng bài"
+        const type = "outcome"
+        const transaction = await this.transactionService.add(ownerId, payAmount, newBalance, detail, type)
+
+        if (transaction) {
+          return "Success! PostId = " + post.id.toString()
+        }
       }
+      return "Fail to create post"
     } catch (error: any) {
       throw new Error(`Unable to create post - Error: ${error}`)
     }

@@ -59,7 +59,8 @@ class PostController implements Controller {
         slug,
         declineReasonId,
         belongToProject,
-        views
+        views,
+        payAmount
       } = req.body
       const token = await this.PostService.create(
         title,
@@ -93,7 +94,8 @@ class PostController implements Controller {
         slug,
         declineReasonId,
         belongToProject,
-        views
+        views,
+        payAmount
       )
       res.status(201).json({ token })
     } catch (error: any) {
