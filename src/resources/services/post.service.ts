@@ -71,51 +71,55 @@ class PostService {
     payAmount: number
   ): Promise<string | Error> {
     try {
-      const post = await this.post.create({
-        title,
-        address,
-        ownerId,
-        postTypeId,
-        estateTypeId,
-        forSaleOrRent,
-        status,
-        location,
-        cor,
-        description,
-        images,
-        legalDocuments,
-        publishedDate,
-        expiredDate,
-        approvedDate,
-        reviewExpireDate,
-        price,
-        priceType,
-        area,
-        floorNumber,
-        bathroomNumber,
-        bedroomNumber,
-        direction,
-        furniture,
-        width,
-        depth,
-        roadWidth,
-        facade,
-        slug,
-        declineReasonId,
-        belongToProject,
-        views,
-      })
+      const usr = await this.user.findById(ownerId)
+      const ogBalance = usr?.balance || 0
 
-      if (post) {
-        const usr = await this.user.findById(ownerId)
-        const ogBalance = usr?.balance || 0
-        const newBalance = ogBalance - payAmount
-        const detail = "Trừ tiền phí đăng bài"
-        const type = "outcome"
-        const transaction = await this.transactionService.add(ownerId, payAmount, newBalance, detail, type)
-
-        if (transaction) {
-          return "Success! PostId = " + post.id.toString()
+      if (ogBalance > payAmount) {
+        const post = await this.post.create({
+          title,
+          address,
+          ownerId,
+          postTypeId,
+          estateTypeId,
+          forSaleOrRent,
+          status,
+          location,
+          cor,
+          description,
+          images,
+          legalDocuments,
+          publishedDate,
+          expiredDate,
+          approvedDate,
+          reviewExpireDate,
+          price,
+          priceType,
+          area,
+          floorNumber,
+          bathroomNumber,
+          bedroomNumber,
+          direction,
+          furniture,
+          width,
+          depth,
+          roadWidth,
+          facade,
+          slug,
+          declineReasonId,
+          belongToProject,
+          views,
+        })
+  
+        if (post) {
+          const newBalance = ogBalance - payAmount
+          const detail = "Trừ tiền phí đăng bài"
+          const type = "outcome"
+          const status = "success"
+          const transaction = await this.transactionService.add(ownerId, payAmount, newBalance, detail, type, status)
+  
+          if (transaction) {
+            return "Success! PostId = " + post.id.toString()
+          }
         }
       }
       return "Fail to create post"

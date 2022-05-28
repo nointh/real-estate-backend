@@ -51,16 +51,15 @@ class TransactionService {
     }
   }
 
-
   public async add(
     user: string,
     amount: number,
     balance: number,
     detail: string,
-    type: string
+    type: string,
+    status: string
   ): Promise<any> {
     try {
-      let status = "waiting"
       let dateProceed = new Date()
       let dateFinish = new Date()
       const trans = await this.transaction.create({

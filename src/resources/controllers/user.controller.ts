@@ -40,6 +40,10 @@ class UserController implements Controller{
             authenticated,
             this.changePassword
         )
+        this.router.post(
+            `${this.path}/balance/update`,
+            this.updateBalance
+        )
         // this.router.get(
         //     `${this.path}`,
         //     this.getUser
@@ -203,6 +207,20 @@ class UserController implements Controller{
             else{
                 next(new HttpException(401,"Cannot update user"))
             }
+        } catch( error:any ){
+            next(new HttpException(400, error.message))
+        }
+    }
+    private updateBalance = async (
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ) : Promise<Response | void> => {
+        try {
+            const { userId, balance } = req.body      
+
+            const res = this.UserService.updateBalance(userId, balance)
+            return res
         } catch( error:any ){
             next(new HttpException(400, error.message))
         }
