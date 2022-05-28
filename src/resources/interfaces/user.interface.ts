@@ -17,5 +17,6 @@ export default interface IUser extends Document {
     date?: string
   }
   postCount: number
+  balance: number
   isValidPassword(password: string): Promise<Error | Boolean>
 }

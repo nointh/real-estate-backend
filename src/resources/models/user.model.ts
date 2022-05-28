@@ -1,6 +1,7 @@
 import { Schema, model } from "mongoose"
 import bcrypt from "bcrypt"
 import IUser from "@/resources/interfaces/user.interface"
+import { num } from "envalid"
 
 const UserSchema = new Schema<IUser>(
   {
@@ -54,6 +55,9 @@ const UserSchema = new Schema<IUser>(
       },
     },
     postCount: {
+      type: Number,
+    },
+    balance: {
       type: Number,
     },
   },
