@@ -92,7 +92,7 @@ const PostSchema = new Schema(
         },
         belongToProject: {
             projectId: {
-                type: Number
+                type: String
             },
             projectName: {
                 type: String

@@ -63,7 +63,7 @@ class PostService {
     slug: string,
     declineReasonId: string,
     belongToProject: {
-      projectId: number
+      projectId: string
       projectName: string
     },
     views: number
@@ -298,7 +298,7 @@ class PostService {
       if (res) {
         return res
       } else {
-        throw new Error("Cannot get post count")
+        return 0
       }
     } catch (error) {
       console.log(error)
@@ -313,7 +313,7 @@ class PostService {
       if (res) {
         return res
       } else {
-        throw new Error("Cannot get post count")
+        return 0
       }
     } catch (error) {
       console.log(error)
