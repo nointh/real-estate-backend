@@ -209,7 +209,8 @@ class PostService {
     status: string,
     postType: string,
     estateType: string,
-    ownerId: string
+    ownerId: string,
+    purpose: string,
   ): Promise<any> {
     try {
       let docs = await this.post
@@ -226,6 +227,9 @@ class PostService {
           ownerId: {
             $regex: new RegExp(ownerId, "i"),
           },
+          forSaleOrRent: {
+            $regex: new RegExp(purpose, "i")
+          }
         })
         .sort({ reviewExpireDate: 1 })
 
