@@ -2,7 +2,26 @@ This is a [Node.js](https://nodejs.org/en/) project with [Express.js](https://ex
 
 ## Getting Started
 
-First, run the development server:
+#### Install npm packages:
+
+```bash
+npm install
+# or
+yarn install
+```
+
+#### Config MongoDB:
+
+- See your Schema at [models folder](../../tree/main/src/resources/models).
+- Create a `.env` file at project root folder as following:
+```bash
+NODE_ENV=development
+PORT=3031 # Your development port
+MONGO_URL=[your_mongodb_database_url]
+JWT_SECRET=[secret_key_connect_to_mongodb]
+```
+
+#### Run the development server:
 
 ```bash
 npm run dev
@@ -12,11 +31,11 @@ yarn dev
 
 Server will run at [http://localhost:3031/](http://localhost:3031/)
 
-## Example
-Try to test an API for getting Provinces of Vietnam
+## Deploy
 
-`http://localhost:3031/api/a/province/get`
+We have deployed this project on Heroku, you can try out:
+- Provinces of Vietnam
+[`https://vn-real-estate-api.herokuapp.com/api/a/province/get`](https://vn-real-estate-api.herokuapp.com/api/a/province/get)
+- Districts in Provinces with Province ID
+[`https://vn-real-estate-api.herokuapp.com/api/a/disctrict/get?p=SG`](https://vn-real-estate-api.herokuapp.com/api/a/district/get?p=SG)
 
-## Demo API!
-
-Comming soon!

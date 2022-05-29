@@ -17,7 +17,6 @@ class TransactionController implements Controller {
     this.router.get(`${this.path}/`, this.get)
     this.router.post(`${this.path}/add`, this.add)
     this.router.post(`${this.path}/add`, this.add)
-
   }
 
   private get = async (
@@ -29,13 +28,14 @@ class TransactionController implements Controller {
       const id = req.query.id?.toString() || ""
       const type = req.query.type?.toString() || ""
       const user = req.query.user?.toString() || ""
+      const status = req.query.status?.toString() || ""
 
       let data = undefined
 
       if (id != "") {
         data = await this.transactionService.get(id)
       } else {
-        data = await this.transactionService.getWithParams(user, type)
+        data = await this.transactionService.getWithParams(user, type, status)
       }
 
       res.status(201).json({ data })
@@ -52,7 +52,14 @@ class TransactionController implements Controller {
     try {
       const { user, amount, balance, detail, type, status } = req.body
 
-      let result = await this.transactionService.add(user, amount, balance, detail, type, status)
+      let result = await this.transactionService.add(
+        user,
+        amount,
+        balance,
+        detail,
+        type,
+        status
+      )
 
       res.status(201).json({ result })
     } catch (error: any) {

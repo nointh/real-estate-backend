@@ -16,7 +16,12 @@ class TransactionService {
     }
   }
 
-  public async getWithParams(id: string, type: string): Promise<any> {
+  public async getWithParams(
+    id: string,
+    type: string,
+    status: string
+  ): Promise<any> {
+    console.log(status)
     try {
       let trans = await this.transaction
         .find({
@@ -25,6 +30,9 @@ class TransactionService {
           },
           type: {
             $regex: new RegExp(type, "i"),
+          },
+          status: {
+            $regex: new RegExp(status, "i"),
           },
         })
         .sort({ dateProceed: -1 })
@@ -48,7 +56,11 @@ class TransactionService {
     }
   }
 
-  public async finish(id: string, status: string, balance?: number): Promise<any> {
+  public async finish(
+    id: string,
+    status: string,
+    balance?: number
+  ): Promise<any> {
     try {
       let result = await this.transaction.updateOne(
         { id: id },
@@ -56,7 +68,7 @@ class TransactionService {
           $set: {
             status: status,
             dateFinish: new Date(),
-            balance: balance
+            balance: balance,
           },
         }
       )
