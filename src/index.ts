@@ -20,6 +20,8 @@ import DeclineReasonController from "./resources/controllers/declineReason.contr
 import ProjectTypeController from "./resources/controllers/projectType.controller"
 import ProjectController from "./resources/controllers/project.controller"
 import NewsController from "@/resources/controllers/news.controller"
+import TransactionController from "@/resources/controllers/transaction.controller"
+
 validateEnv()
 
 const app = new App(
@@ -39,7 +41,8 @@ const app = new App(
     new AdminUserController(),
     new ProjectTypeController(),
     new ProjectController(),
-    new NewsController()
+    new NewsController(),
+    new TransactionController(),
   ],
   Number(process.env.PORT)
 )

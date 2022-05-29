@@ -15,8 +15,11 @@ class PostController implements Controller {
   private initialiseRoutes() {
     this.router.post(`${this.path}/upload`, this.create)
     this.router.get(`${this.path}/get`, this.get)
+    this.router.get(`${this.path}/count`, this.count)
     this.router.post(`${this.path}/delete`, this.delete)
     this.router.get(`${this.path}/slug`, this.getSlug)
+    this.router.post(`${this.path}/view`, this.view)
+
   }
 
   private create = async (
@@ -56,6 +59,8 @@ class PostController implements Controller {
         slug,
         declineReasonId,
         belongToProject,
+        views,
+        payAmount
       } = req.body
       const token = await this.PostService.create(
         title,
@@ -88,7 +93,9 @@ class PostController implements Controller {
         facade,
         slug,
         declineReasonId,
-        belongToProject
+        belongToProject,
+        views,
+        payAmount
       )
       res.status(201).json({ token })
     } catch (error: any) {
@@ -108,6 +115,7 @@ class PostController implements Controller {
       let estateType = req.query.et?.toString()
       let ownerId = req.query.oid?.toString()
       let userId = req.query.usr?.toString()
+      let purpose = req.query.pp?.toString()
 
       let data = undefined
 
@@ -115,6 +123,7 @@ class PostController implements Controller {
       if (postType == undefined) postType = ""
       if (estateType == undefined) estateType = ""
       if (ownerId == undefined) ownerId = ""
+      if (purpose == undefined) purpose = ""
 
       if (postId != undefined) {
         data = await this.PostService.getDetail(postId)
@@ -127,6 +136,7 @@ class PostController implements Controller {
             postType,
             estateType,
             ownerId,
+            purpose
           )
         }
       }
@@ -137,27 +147,23 @@ class PostController implements Controller {
     }
   }
 
-  private getSlug = async ( 
+  private getSlug = async (
     req: Request,
     res: Response,
     next: NextFunction
-    ) : Promise<Response | void> => {
-        try {
-            let slug = req.query.slug?.toString()
-            if (!slug)
-            {
-                const slugs = await this.PostService.getAllPostSlugs()
-                res.status(200).json({ slugs })
-            }
-            else
-            {
-                const post = await this.PostService.getPostBySlug(slug)
-                res.status(200).json({ post })
-            }
-
-        } catch( error:any ){
-            next(new HttpException(400, error.message))
-        }
+  ): Promise<Response | void> => {
+    try {
+      let slug = req.query.slug?.toString()
+      if (!slug) {
+        const slugs = await this.PostService.getAllPostSlugs()
+        res.status(200).json({ slugs })
+      } else {
+        const post = await this.PostService.getPostBySlug(slug)
+        res.status(200).json({ post })
+      }
+    } catch (error: any) {
+      next(new HttpException(400, error.message))
+    }
   }
 
   private delete = async (
@@ -170,6 +176,45 @@ class PostController implements Controller {
       const token = await this.PostService.delete(postId)
 
       res.status(200).json({ token })
+    } catch (error: any) {
+      next(new HttpException(400, error.message))
+    }
+  }
+
+  private count = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<Response | void> => {
+    try {
+      let cityCode = req.query.cityCode?.toString()
+      let userId = req.query.userId?.toString()
+      let data = undefined
+
+      if (cityCode == undefined && userId != undefined) {
+        data = await this.PostService.getTotalPostOfUser(userId)
+      }
+      if (cityCode != undefined && userId == undefined) {
+        data = await this.PostService.getTotalPostOfCity(cityCode)
+      }
+
+      res.status(200).json({ data })
+    } catch (error: any) {
+      next(new HttpException(400, error.message))
+    }
+  }
+
+  private view = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<Response | void> => {
+    try {
+      const { _id } = req.body
+
+      const data = await this.PostService.view(_id)
+
+      res.status(200).json({ data })
     } catch (error: any) {
       next(new HttpException(400, error.message))
     }

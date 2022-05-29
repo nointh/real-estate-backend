@@ -1,10 +1,10 @@
 import PostModel from "@/resources/models/post.model"
-import IPost from "@/resources/interfaces/post.interface"
 import postDtoInterface, { parsePostDto } from "../interfaces/postDto.interface"
 import userModel from "../models/user.model"
 import postTypeModel from "../models/postType.model"
 import estateTypeModel from "../models/estateType.model"
 import priceUnitModel from "../models/priceUnit.model"
+import TransactionService from "./transaction.service"
 
 class PostService {
   private post = PostModel
@@ -12,6 +12,7 @@ class PostService {
   private postType = postTypeModel
   private estateType = estateTypeModel
   private priceUnit = priceUnitModel
+  private transactionService = new TransactionService()
 
   public async create(
     title: string,
@@ -63,50 +64,65 @@ class PostService {
     slug: string,
     declineReasonId: string,
     belongToProject: {
-      projectId: number
+      projectId: string
       projectName: string
-    }
+    },
+    views: number,
+    payAmount: number
   ): Promise<string | Error> {
     try {
-      const post = await this.post.create({
-        title,
-        address,
-        ownerId,
-        postTypeId,
-        estateTypeId,
-        forSaleOrRent,
-        status,
-        location,
-        cor,
-        description,
-        images,
-        legalDocuments,
-        publishedDate,
-        expiredDate,
-        approvedDate,
-        reviewExpireDate,
-        price,
-        priceType,
-        area,
-        floorNumber,
-        bathroomNumber,
-        bedroomNumber,
-        direction,
-        furniture,
-        width,
-        depth,
-        roadWidth,
-        facade,
-        slug,
-        declineReasonId,
-        belongToProject,
-      })
+      const usr = await this.user.findById(ownerId)
+      const ogBalance = usr?.balance || 0
 
-      if (post) {
-        return "Success! PostId = " + post.id.toString()
-      } else {
-        return "Fail to create post"
+      if (ogBalance > payAmount) {
+        const post = await this.post.create({
+          title,
+          address,
+          ownerId,
+          postTypeId,
+          estateTypeId,
+          forSaleOrRent,
+          status,
+          location,
+          cor,
+          description,
+          images,
+          legalDocuments,
+          publishedDate,
+          expiredDate,
+          approvedDate,
+          reviewExpireDate,
+          price,
+          priceType,
+          area,
+          floorNumber,
+          bathroomNumber,
+          bedroomNumber,
+          direction,
+          furniture,
+          width,
+          depth,
+          roadWidth,
+          facade,
+          slug,
+          declineReasonId,
+          belongToProject,
+          views,
+        })
+  
+        if (post) {
+          const newBalance = ogBalance - payAmount
+          const detail = "Trừ tiền phí đăng bài"
+          const type = "outcome"
+          const status = "success"
+          const transaction = await this.transactionService.add(ownerId, payAmount, newBalance, detail, type, status)
+  
+          if (transaction) {
+            return "Success! PostId = " + post.id.toString()
+          }
+        }
       }
+      return "Fail to create post"
     } catch (error: any) {
       throw new Error(`Unable to create post - Error: ${error}`)
     }
@@ -197,23 +213,29 @@ class PostService {
     status: string,
     postType: string,
     estateType: string,
-    ownerId: string
+    ownerId: string,
+    purpose: string,
   ): Promise<any> {
     try {
-      let docs = await this.post.find({
-        status: {
-          $regex: new RegExp(status, "i"),
-        },
-        postTypeId: {
-          $regex: new RegExp(postType, "i"),
-        },
-        estateTypeId: {
-          $regex: new RegExp(estateType, "i"),
-        },
-        ownerId: {
-          $regex: new RegExp(ownerId, "i"),
-        },
-      }).sort({reviewExpireDate: 1})
+      let docs = await this.post
+        .find({
+          status: {
+            $regex: new RegExp(status, "i"),
+          },
+          postTypeId: {
+            $regex: new RegExp(postType, "i"),
+          },
+          estateTypeId: {
+            $regex: new RegExp(estateType, "i"),
+          },
+          ownerId: {
+            $regex: new RegExp(ownerId, "i"),
+          },
+          forSaleOrRent: {
+            $regex: new RegExp(purpose, "i")
+          }
+        })
+        .sort({ reviewExpireDate: 1 })
 
       var dataDtos: postDtoInterface[] = []
 
@@ -250,7 +272,7 @@ class PostService {
 
   public async getAllPostOfUser(userId: string): Promise<any> {
     try {
-      let docs = await this.post.find({ownerId: userId})
+      let docs = await this.post.find({ ownerId: userId })
 
       var dataDtos: postDtoInterface[] = []
 
@@ -282,6 +304,38 @@ class PostService {
     } catch (error) {
       console.log(error)
       throw new Error("Unable to get post list")
+    }
+  }
+
+  public async getTotalPostOfCity(cityId: string): Promise<any> {
+    try {
+      let res = await this.post
+        .where({ "location.CityCode": `${cityId}` })
+        .count()
+
+      if (res) {
+        return res
+      } else {
+        return 0
+      }
+    } catch (error) {
+      console.log(error)
+      throw new Error("Unable to get post count")
+    }
+  }
+
+  public async getTotalPostOfUser(userId: string): Promise<any> {
+    try {
+      let res = await this.post.where({ ownerId: `${userId}` }).count()
+
+      if (res) {
+        return res
+      } else {
+        return 0
+      }
+    } catch (error) {
+      console.log(error)
+      throw new Error("Unable to get post count")
     }
   }
 
@@ -374,6 +428,33 @@ class PostService {
       }
     } catch (error) {
       throw new Error("Unable to count post")
+    }
+  }
+
+  public async view(id: string): Promise<any> {
+    try {
+      console.log(id)
+
+      let post = await this.post.findOne({ id: id })
+
+      if (post) {
+        let v = post?.views
+        v += 1
+        console.log(v)
+        let result = await this.post.updateOne(
+          { id: id },
+          {
+            $set: {
+              views: v,
+            },
+          }
+        )
+
+        return result
+      }
+    } catch (error) {
+      console.log(error)
+      throw new Error("Unable to get post count")
     }
   }
 }

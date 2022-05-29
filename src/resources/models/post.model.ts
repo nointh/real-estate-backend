@@ -92,7 +92,7 @@ const PostSchema = new Schema(
         },
         belongToProject: {
             projectId: {
-                type: Number
+                type: String
             },
             projectName: {
                 type: String
@@ -162,6 +162,9 @@ const PostSchema = new Schema(
         },
         declineReasonId: {
             type: String,
+        },
+        views: {
+            type: Number,
         }
     },
     {

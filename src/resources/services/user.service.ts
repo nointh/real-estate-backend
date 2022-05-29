@@ -171,6 +171,22 @@ class UserService {
       throw new Error(`Unable to update user information - Error: ${error}`)
     }
   }
+  public async updateBalance(
+    userId: string,
+    balance: number,
+  ): Promise<IUser | any | Error> {
+    try {
+      const result = await this.user.updateOne({_id: userId}, {
+        $set: {
+          balance: balance
+        }
+      })
+
+      return result
+    } catch (error: any) {
+      throw new Error(`Unable to update user information - Error: ${error}`)
+    }
+  }
   public async getAllUsers() {
     try {
       const users = await this.user.find()
