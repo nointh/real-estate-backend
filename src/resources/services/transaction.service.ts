@@ -1,10 +1,12 @@
 import transactionModel from "../models/transaction.model"
 import ITransaction from "../interfaces/transaction.interface"
 import userModel from "../models/user.model"
+import UserService from "./user.service"
 
 class TransactionService {
   private transaction = transactionModel
   private user = userModel
+  private userService = new UserService()
 
   public async get(id: string): Promise<any> {
     try {
@@ -56,22 +58,59 @@ class TransactionService {
     }
   }
 
-  public async finish(
-    id: string,
-    status: string,
-    balance?: number
-  ): Promise<any> {
+  public async finishIncomeSuccess(id: string): Promise<any> {
     try {
-      let result = await this.transaction.updateOne(
-        { id: id },
-        {
-          $set: {
-            status: status,
-            dateFinish: new Date(),
-            balance: balance,
-          },
+      let amount = 0
+      let balance = 0
+      let result = undefined
+
+      let trans = await this.transaction.findById(id)
+
+      console.log(trans)
+      if (trans) {
+        amount = trans.amount
+        let user = await this.user.findById(trans?.user)
+        if (user) {
+          balance = user?.balance
+          balance += amount
+          await this.userService.updateBalance(user.id, balance)
+          result = await trans.update({
+            $set: {
+              status: "success",
+              dateFinish: new Date(),
+              balance: balance,
+            },
+          })
         }
-      )
+      }
+
+      return result
+    } catch (error) {
+      throw new Error("Unable to finish transaction")
+    }
+  }
+
+  public async finishIncomeError(id: string): Promise<any> {
+    try {
+      let balance = 0
+      let result = undefined
+
+      let trans = await this.transaction.findById(id)
+
+      console.log(trans)
+      if (trans) {
+        let user = await this.user.findById(trans?.user)
+        if (user) {
+          balance = user?.balance
+          result = await trans.update({
+            $set: {
+              status: "failed",
+              dateFinish: new Date(),
+              balance: balance,
+            },
+          })
+        }
+      }
 
       return result
     } catch (error) {

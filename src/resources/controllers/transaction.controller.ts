@@ -8,7 +8,6 @@ class TransactionController implements Controller {
   public path = "/transaction"
   public router = Router()
   private transactionService = new TransactionService()
-  private userService = new UserService()
 
   constructor() {
     this.initialiseRoutes()
@@ -16,7 +15,7 @@ class TransactionController implements Controller {
   private initialiseRoutes() {
     this.router.get(`${this.path}/`, this.get)
     this.router.post(`${this.path}/add`, this.add)
-    this.router.post(`${this.path}/add`, this.add)
+    this.router.post(`${this.path}/finish`, this.finish)
   }
 
   private get = async (
@@ -60,6 +59,27 @@ class TransactionController implements Controller {
         type,
         status
       )
+
+      res.status(201).json({ result })
+    } catch (error: any) {
+      next(new HttpException(400, error.message))
+    }
+  }
+
+  private finish = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<Response | void> => {
+    try {
+      const { id, status } = req.body
+
+      let result = undefined
+      if (status == "success") {
+        result = await this.transactionService.finishIncomeSuccess(id)
+      } else {
+        result = await this.transactionService.finishIncomeError(id)
+      }
 
       res.status(201).json({ result })
     } catch (error: any) {
