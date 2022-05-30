@@ -44,10 +44,10 @@ class UserController implements Controller{
             `${this.path}/balance/update`,
             this.updateBalance
         )
-        // this.router.get(
-        //     `${this.path}`,
-        //     this.getUser
-        // ),
+        this.router.get(
+            `${this.path}`,
+            this.getUser
+        )
         // this.router.delete(
         //     `${this.path}`,
         //     this.delete
