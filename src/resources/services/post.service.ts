@@ -215,6 +215,7 @@ class PostService {
     estateType: string,
     ownerId: string,
     purpose: string,
+    limit: number
   ): Promise<any> {
     try {
       let docs = await this.post
@@ -235,7 +236,7 @@ class PostService {
             $regex: new RegExp(purpose, "i")
           }
         })
-        .sort({ reviewExpireDate: 1 })
+        .sort({ reviewExpireDate: 1 }).limit(limit)
 
       var dataDtos: postDtoInterface[] = []
 

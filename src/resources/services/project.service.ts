@@ -130,7 +130,8 @@ class ProjectService {
     status: string,
     postType: string,
     projectType: string,
-    investorId: string
+    investorId: string,
+    limit: number
   ): Promise<any> {
     try {
       let docs = await this.project.find({
@@ -146,7 +147,7 @@ class ProjectService {
         investorId: {
           $regex: new RegExp(investorId, "i"),
         },
-      })
+      }).limit(limit)
 
       var dataDtos: projectDtoInterface[] = []
 

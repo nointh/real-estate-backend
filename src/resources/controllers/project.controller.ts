@@ -95,6 +95,7 @@ class ProjectController implements Controller {
       let postType = req.query.pt?.toString()
       let projectType = req.query.et?.toString()
       let ownerId = req.query.oid?.toString()
+      let limit = parseInt(req.query.limit?.toString() || '32')
 
       let data = undefined
 
@@ -111,6 +112,7 @@ class ProjectController implements Controller {
             postType,
             projectType,
             ownerId,
+            limit
         )
       }
 
