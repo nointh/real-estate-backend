@@ -116,6 +116,7 @@ class PostController implements Controller {
       let ownerId = req.query.oid?.toString()
       let userId = req.query.usr?.toString()
       let purpose = req.query.pp?.toString()
+      let limit = parseInt(req.query.limit?.toString() || '40')
 
       let data = undefined
 
@@ -136,7 +137,8 @@ class PostController implements Controller {
             postType,
             estateType,
             ownerId,
-            purpose
+            purpose,
+            limit
           )
         }
       }
