@@ -1,8 +1,10 @@
 import transactionModel from "../models/transaction.model"
 import ITransaction from "../interfaces/transaction.interface"
+import userModel from "../models/user.model"
 
 class TransactionService {
   private transaction = transactionModel
+  private user = userModel
 
   public async get(id: string): Promise<any> {
     try {
@@ -14,9 +16,14 @@ class TransactionService {
     }
   }
 
-  public async getWithParams(id: string, type: string): Promise<any> {
+  public async getWithParams(
+    id: string,
+    type: string,
+    status: string
+  ): Promise<any> {
+    console.log(status)
     try {
-      const trans = await this.transaction
+      let trans = await this.transaction
         .find({
           user: {
             $regex: new RegExp(id, "i"),
@@ -24,16 +31,36 @@ class TransactionService {
           type: {
             $regex: new RegExp(type, "i"),
           },
+          status: {
+            $regex: new RegExp(status, "i"),
+          },
         })
-        .sort({ dateProceed: 1 })
+        .sort({ dateProceed: -1 })
 
-      return trans
+      var newTrans: ITransaction[] = []
+
+      for (let index = 0; index < trans.length; index++) {
+        let element = trans[index]
+
+        let _user = await this.user.findById(element?.user)
+        if (_user) {
+          let username = _user.username
+          element.user = username
+          newTrans.push(element)
+        }
+      }
+
+      return newTrans
     } catch (error) {
       throw new Error("Unable to get transaction")
     }
   }
 
-  public async finish(id: string, status: string): Promise<any> {
+  public async finish(
+    id: string,
+    status: string,
+    balance?: number
+  ): Promise<any> {
     try {
       let result = await this.transaction.updateOne(
         { id: id },
@@ -41,13 +68,14 @@ class TransactionService {
           $set: {
             status: status,
             dateFinish: new Date(),
+            balance: balance,
           },
         }
       )
 
       return result
     } catch (error) {
-      throw new Error("Unable to get transaction")
+      throw new Error("Unable to finish transaction")
     }
   }
 
