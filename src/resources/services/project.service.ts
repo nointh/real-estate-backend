@@ -125,7 +125,32 @@ class ProjectService {
       throw new Error("Unable to approve post")
     }
   }
+  public async getWithSlug( slug: string ) : Promise<any>
+  {
+    try {
+      let post = await this.project.findOne({slug})
+      let owner = await this.user.findById(post?.investorId)
+      let postType = await this.postType.findById(post?.postTypeId)
+      let projectType = await this.projectType.findById(post?.projectTypeId)
 
+      let postDto = parseProjectDto(post)
+      postDto.investor.name = owner?.fullname || ""
+      postDto.investor.phone = owner?.phone || ""
+      postDto.postType.name = postType?.name || ""
+      postDto.postType.title_color = postType?.title_color || ""
+      postDto.projectType.name = projectType?.name || ""
+      postDto.projectType.slug = projectType?.slug || ""
+
+      if (post) {
+        return postDto
+      } else {
+        throw new Error("Cannot find post")
+      }
+    } catch (error) {
+      console.log(error)
+      throw new Error("Unable to approve post")
+    }
+  }
   public async getWithParams(
     status: string,
     postType: string,
