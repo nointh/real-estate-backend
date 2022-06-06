@@ -234,9 +234,131 @@ class PostService {
           },
           forSaleOrRent: {
             $regex: new RegExp(purpose, "i")
+          },
+          price: {
+            $gte: 0,
+            $lte: 400000000
+          },
+          priceType: {
+            $regex: new RegExp('627bb337ea534ab59178172b', "i"),
           }
         })
         .sort({ reviewExpireDate: 1 }).limit(limit)
+
+      var dataDtos: postDtoInterface[] = []
+
+      for (let index = 0; index < docs.length; index++) {
+        const element = docs[index]
+
+        let owner = await this.user.findById(element?.ownerId)
+        let postType = await this.postType.findById(element?.postTypeId)
+        let estateType = await this.estateType.findById(element?.estateTypeId)
+        let priceUnit = await this.priceUnit.findById(element?.priceType)
+
+        let postDto = parsePostDto(element)
+        postDto.owner.name = owner?.fullname || ""
+        postDto.owner.phone = owner?.phone || ""
+        postDto.postType.name = postType?.name || ""
+        postDto.postType.title_color = postType?.title_color || ""
+        postDto.estateType.name = estateType?.name || ""
+        postDto.estateType.slug = estateType?.slug || ""
+        postDto.priceType = priceUnit?.label || ""
+
+        dataDtos.push(postDto)
+      }
+
+      if (docs) {
+        return dataDtos
+      } else {
+        throw new Error("Cannot get post list")
+      }
+    } catch (error) {
+      console.log(error)
+      throw new Error("Unable to get post list")
+    }
+  }
+
+  public async getOnSearch(
+    province: string,
+    district: string,
+    ward: string,
+    street: string,
+    type: string,
+    project: string,
+    price: {
+      min: number,
+      max: number,
+    },
+    area: {
+      min: number,
+      max: number,
+    },
+    bedroom: {
+      min: number,
+      max: number,
+    },
+    width: {
+      min: number,
+      max: number,
+    },
+    streetWidth: {
+      min: number,
+      max: number,
+    },
+    saleOrRent: string,
+    orientation: string,
+  ): Promise<any> {
+    try {
+      let docs = await this.post
+      .find({
+        status: {
+          $regex: new RegExp("approved", "i"),
+        },
+        estateTypeId: {
+          $regex: new RegExp(type, "i"),
+        },
+        forSaleOrRent: {
+          $regex: new RegExp(saleOrRent, "i")
+        },
+        price: {
+          $gte: price.min,
+          $lte: price.max
+        },
+        area: {
+          $gte: area.min,
+          $lte: area.max
+        },
+        width: {
+          $gte: width.min,
+          $lte: width.max
+        },
+        roadWidth: {
+          $gte: streetWidth.min,
+          $lte: streetWidth.max
+        },
+        bedroomNumber: {
+          $gte: bedroom.min,
+          $lte: bedroom.max
+        },
+        direction: {
+          $regex: new RegExp(orientation, "i"),
+        },
+        priceType: {
+          $regex: new RegExp('', "i"),
+        },
+        "location.CityCode": {
+          $regex: new RegExp(province, "i"),
+        },
+        "location.DistrictId": {
+          $regex: new RegExp(district, "i"),
+        },
+        "location.WardId": {
+          $regex: new RegExp(ward, "i"),
+        },
+        "location.StreetId": {
+          $regex: new RegExp(street, "i"),
+        }
+      }).sort({ reviewExpireDate: 1 }).limit(35)
 
       var dataDtos: postDtoInterface[] = []
 

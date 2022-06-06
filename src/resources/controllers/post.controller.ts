@@ -19,6 +19,7 @@ class PostController implements Controller {
     this.router.post(`${this.path}/delete`, this.delete)
     this.router.get(`${this.path}/slug`, this.getSlug)
     this.router.post(`${this.path}/view`, this.view)
+    this.router.post(`${this.path}/search`, this.search)
 
   }
 
@@ -215,6 +216,50 @@ class PostController implements Controller {
       const { _id } = req.body
 
       const data = await this.PostService.view(_id)
+
+      res.status(200).json({ data })
+    } catch (error: any) {
+      next(new HttpException(400, error.message))
+    }
+  }
+
+  private search = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<Response | void> => {
+    try {
+      const {
+        province,
+        district,
+        ward,
+        street,
+        type,
+        project,
+        price,
+        area,
+        bedroom,
+        width,
+        streetWidth,
+        orientation,
+        saleOrRent
+      } = req.body
+
+      let data = await this.PostService.getOnSearch(
+        province,
+        district,
+        ward,
+        street,
+        type,
+        project,
+        price,
+        area,
+        bedroom,
+        width,
+        streetWidth,
+        orientation,
+        saleOrRent
+      )
 
       res.status(200).json({ data })
     } catch (error: any) {
