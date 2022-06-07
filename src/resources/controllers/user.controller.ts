@@ -219,8 +219,8 @@ class UserController implements Controller{
         try {
             const { userId, balance } = req.body      
 
-            const res = this.UserService.updateBalance(userId, balance)
-            return res
+            await this.UserService.updateBalance(userId, balance)
+            res.status(200).json({ message: "Update user successfully" })
         } catch( error:any ){
             next(new HttpException(400, error.message))
         }
