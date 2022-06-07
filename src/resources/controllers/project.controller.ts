@@ -96,6 +96,7 @@ class ProjectController implements Controller {
       let projectType = req.query.et?.toString()
       let ownerId = req.query.oid?.toString()
       let limit = parseInt(req.query.limit?.toString() || '32')
+      let slug = req.query.slug?.toString()
 
       let data = undefined
 
@@ -106,7 +107,12 @@ class ProjectController implements Controller {
 
       if (projectId != undefined) {
         data = await this.ProjectService.getDetail(projectId)
-      } else {
+      }
+      else if (slug != undefined)
+      {
+        data = await this.ProjectService.getWithSlug(slug)
+      }
+       else {
         data = await this.ProjectService.getWithParams(
             status,
             postType,
