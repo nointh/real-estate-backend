@@ -37,7 +37,7 @@ class TransactionService {
             $regex: new RegExp(status, "i"),
           },
         })
-        .sort({ dateProceed: -1 })
+        .sort({ status: 1, dateFinish: -1, dateProceed: -1 })
 
       var newTrans: ITransaction[] = []
 

@@ -109,14 +109,21 @@ class PostService {
           belongToProject,
           views,
         })
-  
+
         if (post) {
           const newBalance = ogBalance - payAmount
           const detail = "Trừ tiền phí đăng bài"
           const type = "outcome"
           const status = "success"
-          const transaction = await this.transactionService.add(ownerId, payAmount, newBalance, detail, type, status)
-  
+          const transaction = await this.transactionService.add(
+            ownerId,
+            payAmount,
+            newBalance,
+            detail,
+            type,
+            status
+          )
+
           if (transaction) {
             return "Success! PostId = " + post.id.toString()
           }
@@ -233,17 +240,11 @@ class PostService {
             $regex: new RegExp(ownerId, "i"),
           },
           forSaleOrRent: {
-            $regex: new RegExp(purpose, "i")
+            $regex: new RegExp(purpose, "i"),
           },
-          price: {
-            $gte: 0,
-            $lte: 400000000
-          },
-          priceType: {
-            $regex: new RegExp('627bb337ea534ab59178172b', "i"),
-          }
         })
-        .sort({ reviewExpireDate: 1 }).limit(limit)
+        .sort({ reviewExpireDate: 1 })
+        .limit(limit)
 
       var dataDtos: postDtoInterface[] = []
 
@@ -286,79 +287,81 @@ class PostService {
     type: string,
     project: string,
     price: {
-      min: number,
-      max: number,
+      min: number
+      max: number
     },
     area: {
-      min: number,
-      max: number,
+      min: number
+      max: number
     },
     bedroom: {
-      min: number,
-      max: number,
+      min: number
+      max: number
     },
     width: {
-      min: number,
-      max: number,
+      min: number
+      max: number
     },
     streetWidth: {
-      min: number,
-      max: number,
+      min: number
+      max: number
     },
     saleOrRent: string,
-    orientation: string,
+    orientation: string
   ): Promise<any> {
     try {
       let docs = await this.post
-      .find({
-        status: {
-          $regex: new RegExp("approved", "i"),
-        },
-        estateTypeId: {
-          $regex: new RegExp(type, "i"),
-        },
-        forSaleOrRent: {
-          $regex: new RegExp(saleOrRent, "i")
-        },
-        price: {
-          $gte: price.min,
-          $lte: price.max
-        },
-        area: {
-          $gte: area.min,
-          $lte: area.max
-        },
-        width: {
-          $gte: width.min,
-          $lte: width.max
-        },
-        roadWidth: {
-          $gte: streetWidth.min,
-          $lte: streetWidth.max
-        },
-        bedroomNumber: {
-          $gte: bedroom.min,
-          $lte: bedroom.max
-        },
-        direction: {
-          $regex: new RegExp(orientation, "i"),
-        },
-        priceType: {
-          $regex: new RegExp('', "i"),
-        },
-        "location.CityCode": {
-          $regex: new RegExp(province, "i"),
-        },
-        "location.DistrictId": {
-          $regex: new RegExp(district, "i"),
-        },
-        "location.WardId": {
-          $regex: new RegExp(ward, "i"),
-        },
-        "location.StreetId": {
-          $regex: new RegExp(street, "i"),
-        }
-      }).sort({ reviewExpireDate: 1 }).limit(35)
+        .find({
+          status: {
+            $regex: new RegExp("approved", "i"),
+          },
+          estateTypeId: {
+            $regex: new RegExp(type, "i"),
+          },
+          forSaleOrRent: {
+            $regex: new RegExp(saleOrRent, "i"),
+          },
+          price: {
+            $gte: price.min,
+            $lte: price.max,
+          },
+          area: {
+            $gte: area.min,
+            $lte: area.max,
+          },
+          width: {
+            $gte: width.min,
+            $lte: width.max,
+          },
+          roadWidth: {
+            $gte: streetWidth.min,
+            $lte: streetWidth.max,
+          },
+          bedroomNumber: {
+            $gte: bedroom.min,
+            $lte: bedroom.max,
+          },
+          direction: {
+            $regex: new RegExp(orientation, "i"),
+          },
+          priceType: {
+            $regex: new RegExp("", "i"),
+          },
+          "location.CityCode": {
+            $regex: new RegExp(province, "i"),
+          },
+          "location.DistrictId": {
+            $regex: new RegExp(district, "i"),
+          },
+          "location.WardId": {
+            $regex: new RegExp(ward, "i"),
+          },
+          "location.StreetId": {
+            $regex: new RegExp(street, "i"),
+          },
+        })
+        .sort({ reviewExpireDate: 1 })
+        .limit(35)
 
       var dataDtos: postDtoInterface[] = []
 

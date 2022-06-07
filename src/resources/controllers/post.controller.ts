@@ -20,7 +20,6 @@ class PostController implements Controller {
     this.router.get(`${this.path}/slug`, this.getSlug)
     this.router.post(`${this.path}/view`, this.view)
     this.router.post(`${this.path}/search`, this.search)
-
   }
 
   private create = async (
@@ -61,7 +60,7 @@ class PostController implements Controller {
         declineReasonId,
         belongToProject,
         views,
-        payAmount
+        payAmount,
       } = req.body
       const token = await this.PostService.create(
         title,
@@ -117,7 +116,7 @@ class PostController implements Controller {
       let ownerId = req.query.oid?.toString()
       let userId = req.query.usr?.toString()
       let purpose = req.query.pp?.toString()
-      let limit = parseInt(req.query.limit?.toString() || '40')
+      let limit = parseInt(req.query.limit?.toString() || "40")
 
       let data = undefined
 
@@ -126,6 +125,8 @@ class PostController implements Controller {
       if (estateType == undefined) estateType = ""
       if (ownerId == undefined) ownerId = ""
       if (purpose == undefined) purpose = ""
+
+      console.log(status)
 
       if (postId != undefined) {
         data = await this.PostService.getDetail(postId)
@@ -242,7 +243,7 @@ class PostController implements Controller {
         width,
         streetWidth,
         orientation,
-        saleOrRent
+        saleOrRent,
       } = req.body
 
       let data = await this.PostService.getOnSearch(
