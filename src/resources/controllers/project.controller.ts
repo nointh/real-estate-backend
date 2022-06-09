@@ -14,6 +14,8 @@ class ProjectController implements Controller {
   private initialiseRoutes() {
     this.router.post(`${this.path}/upload`, this.create)
     this.router.get(`${this.path}/get`, this.get)
+    this.router.get(`${this.path}/count`, this.count)
+
   }
 
   private create = async (
@@ -76,7 +78,7 @@ class ProjectController implements Controller {
         buildingNumber,
         density,
         declineReasonId,
-        slug,
+        slug
       )
       res.status(201).json({ token })
     } catch (error: any) {
@@ -95,8 +97,9 @@ class ProjectController implements Controller {
       let postType = req.query.pt?.toString()
       let projectType = req.query.et?.toString()
       let ownerId = req.query.oid?.toString()
-      let limit = parseInt(req.query.limit?.toString() || '32')
+      let limit = parseInt(req.query.limit?.toString() || "32")
       let slug = req.query.slug?.toString()
+      let page = parseInt(req.query.page?.toString() || "1")
 
       let data = undefined
 
@@ -107,20 +110,34 @@ class ProjectController implements Controller {
 
       if (projectId != undefined) {
         data = await this.ProjectService.getDetail(projectId)
-      }
-      else if (slug != undefined)
-      {
+      } else if (slug != undefined) {
         data = await this.ProjectService.getWithSlug(slug)
-      }
-       else {
+      } else {
         data = await this.ProjectService.getWithParams(
-            status,
-            postType,
-            projectType,
-            ownerId,
-            limit
+          status,
+          postType,
+          projectType,
+          ownerId,
+          limit,
+          page
         )
       }
+
+      res.status(200).json({ data })
+    } catch (error: any) {
+      next(new HttpException(400, error.message))
+    }
+  }
+
+  private count = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<Response | void> => {
+    try {
+      let status = req.query.s?.toString() || ""
+
+      let data = await this.ProjectService.count(status)
 
       res.status(200).json({ data })
     } catch (error: any) {

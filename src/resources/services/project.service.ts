@@ -1,5 +1,7 @@
 import projectModel from "../models/project.model"
-import projectDtoInterface, { parseProjectDto } from "../interfaces/projectDto.interface"
+import projectDtoInterface, {
+  parseProjectDto,
+} from "../interfaces/projectDto.interface"
 import userModel from "../models/user.model"
 import postTypeModel from "../models/postType.model"
 import projectTypeModel from "../models/projectType.model"
@@ -21,32 +23,34 @@ class ProjectService {
     manager: string,
     constructor: string,
     location: {
-      CityCode: string,
-      CityName: string,
-      DistrictId: string,
-      DistrictName: string,
-      DistrictPrefix: string,
-      Label: string,
-      ShortName: null,
-      StreetId: string,
-      StreetName: string,
-      StreetPrefix: string,
-      TextSearch: string,
-      WardId: string,
-      WardName: null,
+      CityCode: string
+      CityName: string
+      DistrictId: string
+      DistrictName: string
+      DistrictPrefix: string
+      Label: string
+      ShortName: null
+      StreetId: string
+      StreetName: string
+      StreetPrefix: string
+      TextSearch: string
+      WardId: string
+      WardName: null
       WardPrefix: null
     },
     cor: {
-      lat: number,
+      lat: number
       Lng: number
     },
-    description: [{
-      type: string,
-      content: string,
-      caption: string
-    }],
-    images: [ string ],
-    utilities: [ string ],
+    description: [
+      {
+        type: string
+        content: string
+        caption: string
+      }
+    ],
+    images: [string],
+    utilities: [string],
     legalDocuments: string,
     publishedDate: string,
     expiredDate: string,
@@ -58,7 +62,7 @@ class ProjectService {
     buildingNumber: number,
     density: number,
     declineReasonId: string,
-    slug: string,
+    slug: string
   ): Promise<string | Error> {
     try {
       const post = await this.project.create({
@@ -125,10 +129,9 @@ class ProjectService {
       throw new Error("Unable to approve post")
     }
   }
-  public async getWithSlug( slug: string ) : Promise<any>
-  {
+  public async getWithSlug(slug: string): Promise<any> {
     try {
-      let post = await this.project.findOne({slug})
+      let post = await this.project.findOne({ slug })
       let owner = await this.user.findById(post?.investorId)
       let postType = await this.postType.findById(post?.postTypeId)
       let projectType = await this.projectType.findById(post?.projectTypeId)
@@ -156,23 +159,27 @@ class ProjectService {
     postType: string,
     projectType: string,
     investorId: string,
-    limit: number
+    limit: number,
+    page: number
   ): Promise<any> {
     try {
-      let docs = await this.project.find({
-        status: {
-          $regex: new RegExp(status, "i"),
-        },
-        postTypeId: {
-          $regex: new RegExp(postType, "i"),
-        },
-        projectTypeId: {
-          $regex: new RegExp(projectType, "i"),
-        },
-        investorId: {
-          $regex: new RegExp(investorId, "i"),
-        },
-      }).limit(limit)
+      let docs = await this.project
+        .find({
+          status: {
+            $regex: new RegExp(status, "i"),
+          },
+          postTypeId: {
+            $regex: new RegExp(postType, "i"),
+          },
+          projectTypeId: {
+            $regex: new RegExp(projectType, "i"),
+          },
+          investorId: {
+            $regex: new RegExp(investorId, "i"),
+          },
+        })
+        .skip((page - 1) * 8)
+        .limit(limit)
 
       var dataDtos: projectDtoInterface[] = []
 
@@ -181,7 +188,9 @@ class ProjectService {
 
         let owner = await this.user.findById(element?.investorId)
         let postType = await this.postType.findById(element?.postTypeId)
-        let projectType = await this.projectType.findById(element?.projectTypeId)
+        let projectType = await this.projectType.findById(
+          element?.projectTypeId
+        )
 
         let postDto = parseProjectDto(element)
         postDto.investor.name = owner?.fullname || ""
@@ -196,6 +205,24 @@ class ProjectService {
 
       if (docs) {
         return dataDtos
+      } else {
+        throw new Error("Cannot get post list")
+      }
+    } catch (error) {
+      console.log(error)
+      throw new Error("Unable to get post list")
+    }
+  }
+  public async count(status: string): Promise<any> {
+    try {
+      let docs = await this.project.find({
+        status: {
+          $regex: new RegExp(status, "i"),
+        },
+      })
+
+      if (docs) {
+        return docs.length
       } else {
         throw new Error("Cannot get post list")
       }
