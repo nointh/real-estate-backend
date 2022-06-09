@@ -307,8 +307,10 @@ class PostService {
     },
     saleOrRent: string,
     orientation: string,
+    page: number,
   ): Promise<any> {
     try {
+      let count = 0
       let docs = await this.post
       .find({
         status: {
@@ -358,7 +360,66 @@ class PostService {
         "location.StreetId": {
           $regex: new RegExp(street, "i"),
         }
-      }).sort({ reviewExpireDate: 1 }).limit(35)
+      })
+      .sort({ _id: 1 })
+      .skip((page - 1) * 8)
+      .limit(8)
+      .lean()
+
+      if (page == 1) {
+        let total = await this.post
+        .find({
+          status: {
+            $regex: new RegExp("approved", "i"),
+          },
+          estateTypeId: {
+            $regex: new RegExp(type, "i"),
+          },
+          forSaleOrRent: {
+            $regex: new RegExp(saleOrRent, "i")
+          },
+          price: {
+            $gte: price.min,
+            $lte: price.max
+          },
+          area: {
+            $gte: area.min,
+            $lte: area.max
+          },
+          width: {
+            $gte: width.min,
+            $lte: width.max
+          },
+          roadWidth: {
+            $gte: streetWidth.min,
+            $lte: streetWidth.max
+          },
+          bedroomNumber: {
+            $gte: bedroom.min,
+            $lte: bedroom.max
+          },
+          direction: {
+            $regex: new RegExp(orientation, "i"),
+          },
+          priceType: {
+            $regex: new RegExp('', "i"),
+          },
+          "location.CityCode": {
+            $regex: new RegExp(province, "i"),
+          },
+          "location.DistrictId": {
+            $regex: new RegExp(district, "i"),
+          },
+          "location.WardId": {
+            $regex: new RegExp(ward, "i"),
+          },
+          "location.StreetId": {
+            $regex: new RegExp(street, "i"),
+          }
+        })
+        .count()
+        count = total
+      }
 
       var dataDtos: postDtoInterface[] = []
 
@@ -383,7 +444,10 @@ class PostService {
       }
 
       if (docs) {
-        return dataDtos
+        return {
+          data: dataDtos,
+          count: count
+        }
       } else {
         throw new Error("Cannot get post list")
       }
