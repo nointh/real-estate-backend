@@ -235,13 +235,6 @@ class PostService {
           forSaleOrRent: {
             $regex: new RegExp(purpose, "i")
           },
-          price: {
-            $gte: 0,
-            $lte: 400000000
-          },
-          priceType: {
-            $regex: new RegExp('627bb337ea534ab59178172b', "i"),
-          }
         })
         .sort({ reviewExpireDate: 1 }).limit(limit)
 
