@@ -244,6 +244,7 @@ class PostController implements Controller {
         streetWidth,
         orientation,
         saleOrRent,
+        page
       } = req.body
 
       let data = await this.PostService.getOnSearch(
@@ -259,7 +260,8 @@ class PostController implements Controller {
         width,
         streetWidth,
         orientation,
-        saleOrRent
+        saleOrRent,
+        page
       )
 
       res.status(200).json({ data })
