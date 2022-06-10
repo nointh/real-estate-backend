@@ -204,5 +204,23 @@ class ProjectService {
       throw new Error("Unable to get post list")
     }
   }
+  public async getSlugs(): Promise<any> {
+    try {
+      let projects = await this.project.find({})
+      projects = projects.filter( val => val?.slug)
+      const slugs = projects.map(val => {return { params: {
+        estateProjectSlug: val.slug
+      }}})
+      console.log(slugs)
+      if (slugs) {
+        return slugs
+      } else {
+        throw new Error("Cannot find project slugs")
+      }
+    } catch (error) {
+      console.log(error)
+      throw new Error("Unable to approve post")
+    }
+  }
 }
 export default ProjectService
