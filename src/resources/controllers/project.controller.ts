@@ -16,6 +16,7 @@ class ProjectController implements Controller {
     this.router.get(`${this.path}/get`, this.get)
     this.router.get(`${this.path}/count`, this.count)
 
+    this.router.get(`${this.path}/slug`, this.getSlug)
   }
 
   private create = async (
@@ -139,6 +140,19 @@ class ProjectController implements Controller {
 
       let data = await this.ProjectService.count(status)
 
+      res.status(200).json({ data })
+    } catch (error: any) {
+      next(new HttpException(400, error.message))
+    }
+  }
+
+  private getSlug = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<Response | void> => {
+    try {
+      const data = await this.ProjectService.getSlugs()
       res.status(200).json({ data })
     } catch (error: any) {
       next(new HttpException(400, error.message))
