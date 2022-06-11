@@ -116,7 +116,8 @@ class PostController implements Controller {
       let ownerId = req.query.oid?.toString()
       let userId = req.query.usr?.toString()
       let purpose = req.query.pp?.toString()
-      let limit = parseInt(req.query.limit?.toString() || "40")
+      let limit = parseInt(req.query.limit?.toString() || "5")
+      let page = parseInt(req.query.page?.toString() || "1")
 
       let data = undefined
 
@@ -140,7 +141,8 @@ class PostController implements Controller {
             estateType,
             ownerId,
             purpose,
-            limit
+            limit,
+            page
           )
         }
       }
@@ -193,13 +195,17 @@ class PostController implements Controller {
     try {
       let cityCode = req.query.cityCode?.toString()
       let userId = req.query.userId?.toString()
+      let status = req.query.status?.toString()
       let data = undefined
 
-      if (cityCode == undefined && userId != undefined) {
+      if (userId != undefined) {
         data = await this.PostService.getTotalPostOfUser(userId)
       }
-      if (cityCode != undefined && userId == undefined) {
+      if (cityCode != undefined) {
         data = await this.PostService.getTotalPostOfCity(cityCode)
+      }
+      if (status != undefined) {
+        data = await this.PostService.count(status)
       }
 
       res.status(200).json({ data })
@@ -244,7 +250,7 @@ class PostController implements Controller {
         streetWidth,
         orientation,
         saleOrRent,
-        page
+        page,
       } = req.body
 
       let data = await this.PostService.getOnSearch(
