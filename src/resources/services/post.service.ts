@@ -5,6 +5,9 @@ import postTypeModel from "../models/postType.model"
 import estateTypeModel from "../models/estateType.model"
 import priceUnitModel from "../models/priceUnit.model"
 import TransactionService from "./transaction.service"
+import districtModel from "../models/address/district.model"
+import streetModel from "../models/address/street.model"
+import wardModel from "../models/address/ward.model"
 
 class PostService {
   private post = PostModel
@@ -13,6 +16,9 @@ class PostService {
   private estateType = estateTypeModel
   private priceUnit = priceUnitModel
   private transactionService = new TransactionService()
+  private district = districtModel
+  private ward = wardModel
+  private street = streetModel
 
   public async create(
     title: string,
@@ -313,6 +319,19 @@ class PostService {
     page: number
   ): Promise<any> {
     try {
+      let districtObj = await this.district.findOne({ districtCode: district })
+      let districtId = districtObj?._id.toString() || ""
+
+      let wardObj = await this.ward.findOne({ wardCode: ward })
+      let wardId = wardObj?._id.toString() || ""
+
+      let streetObj = await this.street.findOne({ streetCode: street })
+      let streetId = streetObj?._id.toString() || ""
+
+      console.log(districtId)
+      console.log(wardId)
+      console.log(streetId)
+
       let count = 0
       let docs = await this.post
         .find({
@@ -355,13 +374,13 @@ class PostService {
             $regex: new RegExp(province, "i"),
           },
           "location.DistrictId": {
-            $regex: new RegExp(district, "i"),
+            $regex: new RegExp(districtId, "i"),
           },
           "location.WardId": {
-            $regex: new RegExp(ward, "i"),
+            $regex: new RegExp(wardId, "i"),
           },
           "location.StreetId": {
-            $regex: new RegExp(street, "i"),
+            $regex: new RegExp(streetId, "i"),
           },
         })
         .sort({ _id: 1 })
@@ -411,13 +430,13 @@ class PostService {
               $regex: new RegExp(province, "i"),
             },
             "location.DistrictId": {
-              $regex: new RegExp(district, "i"),
+              $regex: new RegExp(districtId, "i"),
             },
             "location.WardId": {
-              $regex: new RegExp(ward, "i"),
+              $regex: new RegExp(wardId, "i"),
             },
             "location.StreetId": {
-              $regex: new RegExp(street, "i"),
+              $regex: new RegExp(streetId, "i"),
             },
           })
           .count()
@@ -452,7 +471,7 @@ class PostService {
           count: count,
         }
       } else {
-        throw new Error("Cannot get post list")
+        throw new Error("Cannot get post list: null")
       }
     } catch (error) {
       console.log(error)
